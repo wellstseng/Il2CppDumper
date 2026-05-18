@@ -367,3 +367,6 @@ FodyWeavers.xsd
 # Local sample inputs (reverse-engineering assets, do not commit)
 /Input/
 /publish/
+
+# Doomsday Phase2 mechanical translation preview output (副產品，Final/ 是權威)
+/memory/_staging/phase2_mechanical_preview*/

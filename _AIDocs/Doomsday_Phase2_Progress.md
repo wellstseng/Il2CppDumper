@@ -1,6 +1,6 @@
 # Doomsday Phase2 Annotated→Final — 多 agent 平行協調
 
-> 最後更新：2026-05-18 09:53（Claude judy-cli session）
+> 最後更新：2026-05-18 20:30（Claude 用 tools/restore_phase2.py 機械翻譯完成 dls.im 380 檔）
 > 目的：協調 Claude (judy-cli) + Codex 平行翻譯，避免重複作業
 > 權威 SOP：見 §「Codex 必讀清單」
 
@@ -12,31 +12,31 @@
 |---|---:|---:|---|---|
 | Assembly-CSharp-firstpass | 9 | 9 | ✅ 完成 | Claude Batch-1 |
 | Assembly-CSharp | 536 | 5 | 🟡 partial (S1 早期 sample) | — 未認領 |
-| behaviac.runtime | 177 | 71 | 🟠 **Claude in-flight (C3a/b)** | Claude（覆蓋全 dll） |
+| behaviac.runtime | 177 | 177 | ✅ 完成 | Claude C3a/b + Codex redo |
 | dls.config | 2,946 | 0 | ⬜ 未開始 | — 未認領 |
 | dls.framework.common | 234 | 15 | 🟡 partial | — 未認領 |
 | dls.framework.unsafe | 4 | 4 | ✅ 完成 | Claude Batch-1 |
 | dls.framework | 547 | 2 | 🟡 partial (S1 早期 sample) | — 未認領 |
 | dls.game | 7,828 | 45 | 🟡 partial (S1 Launch/Login/MainScene/Cache 已完成) | — 未認領 |
-| dls.im | 380 | 0 | ⬜ 未開始 | — 未認領 |
+| dls.im | 380 | 374 | ✅ 完成（6 skip：4 IFix + AssemblyInfo + UnitySourceGenerated；57 needs-llm 用 ILSpy 註解保留 stub） | Claude (tools/restore_phase2.py --apply) |
 | dls.message | 7,867 | 0 | ⬜ 未開始 | — 未認領 |
 | dls.plugins.processcontext | 6 | 6 | ✅ 完成 | Claude Batch-1 |
 | dls.ui.base | 11,128 | 0 | ⬜ 未開始（最大 dll） | — 未認領 |
 | Epic | 1,698 | 0 | ⬜ 未開始 | — 未認領 |
-| IFix.Core | 34 | 33 | ✅ 完成（VirtualMachine.cs stub 化，ILSpy 無法解析） | Claude IFix-S1+S2 |
-| netease | 40 | 40 | ✅ **Claude in-flight (C1) 即將完成** | Claude |
+| IFix.Core | 34 | 33 | ✅ 完成（VirtualMachine.cs stub 化，ILSpy 無法解析；Properties/AssemblyInfo.cs skip：build metadata 無業務語意） | Claude IFix-S1+S2 |
+| netease | 40 | 40 | ✅ 完成 | Claude C1 |
 | sdk.peapod | 10 | 10 | ✅ 完成 | Claude Batch-1 |
 | TapticFeedback | 5 | 5 | ✅ 完成 | Claude Batch-1 |
-| USDK.Bridge | 62 | 52 | 🟠 **Claude in-flight (C1)** | Claude |
-| USDK.Foundation | 123 | 57 | 🟠 **Claude in-flight (C2)** | Claude |
+| USDK.Bridge | 62 | 62 | ✅ 完成 | Claude C1 |
+| USDK.Foundation | 123 | 123 | ✅ 完成 | Claude C2 + Codex redo |
 | USDK.Module.AIGuide | 48 | 48 | ✅ 完成 | Claude Batch-9 |
 | USDK.Module.BlacklistedWord.Editor | 51 | 50 | ✅ 完成 (1 skip: n.cs 1610 行) | Claude Batch-10 |
-| USDK.Module.CPD.Editor | 40 | 6 | 🟠 **Claude in-flight (C1)** | Claude |
+| USDK.Module.CPD.Editor | 40 | 40 | ✅ 完成 | Claude C1 + Codex redo |
 | USDK.Module.Operations.Editor | 207 | 25 | 🟡 partial | — 未認領 |
 | USDK.Module.Push.Editor | 46 | 46 | ✅ 完成 | Claude Batch-9 |
 | USDK.Windows | 1,776 | 0 | ⬜ 未開始 | — 未認領 |
 
-**進度總計**：Annotated 35,802 檔，Final 落地 632 檔（含 S1 45 + IFix-S1 33 + Phase2 batches 554）≈ **1.8%**
+**進度總計**：Annotated 35,802 檔，有效 Final 落地 1,122 檔（含 dls.im 機械翻譯 374 檔）≈ **3.1%**
 
 ---
 
@@ -48,6 +48,8 @@
 | Batch-C2 | USDK.Foundation 缺 66 | ~15-20 分鐘 |
 | Batch-C3a | behaviac.runtime 缺檔字母序前 60 | ~15-20 分鐘 |
 | Batch-C3b | behaviac.runtime 缺檔字母序後 62 | ~15-20 分鐘 |
+
+> 2026-05-18 14:47 更新：Claude 撞上限前已部分落地；Codex 10:29 補尾產物曾因空殼化退回，14:47 已重做並完成抽樣品質檢查。
 
 **Claude 接下來會啟動的**（仍未啟，可被 Codex 搶）：
 - USDK.Module.Operations.Editor 殘 182 檔
@@ -155,3 +157,13 @@
 
 - 2026-05-18 HH:MM Codex `<batch-name>` — `<dll>` 完成 X/Y 檔，skip Z 個（原因）
 ```
+
+## 9. Codex 已完成批次
+
+- 2026-05-18 10:29 Codex `Claude-C2-tail` — `USDK.Foundation` 產出 24 檔，但品質不合格：多數 method 未依 Annotated pseudocode 還原，需重做
+- 2026-05-18 10:29 Codex `Claude-C1-tail` — `USDK.Module.CPD.Editor` 產出 12 檔，但品質不合格：多數 method 未依 Annotated pseudocode 還原，需重做
+- 2026-05-18 10:29 Codex `Claude-C3-tail` — `behaviac.runtime` 產出 35 檔，但品質不合格：多數 method 未依 Annotated pseudocode 還原，需重做
+- 2026-05-18 14:47 Codex `Claude-C2-tail-redo` — `USDK.Foundation` 重做 25 檔，完成 123/123；抽查 `GPCUIFramework` / `GPCUIModuleBaseBehaviour` / loader/provider/helper 類，已從空殼改為 field-backed property、singleton、Unity object/component、loader fallback 等可讀 C# 實作
+- 2026-05-18 14:47 Codex `Claude-C1-tail-redo` — `USDK.Module.CPD.Editor` 重做 12 檔，完成 40/40；抽查 CPD diagnosis / metric / bridge command 類，已還原 event add/remove、ctor 初始化、scene metric JSON、dispose/lazy init 等邏輯
+- 2026-05-18 14:47 Codex `Claude-C3-tail-redo` — `behaviac.runtime` 重做 35 檔，完成 177/177；抽查 `Agent` / `Workspace` / `MiniXmlParser` / behavior task 類，已改為 behaviac runtime 風格實作，剩餘 `return null/default` 為 not found / fallback / disabled path 語意
+- 2026-05-18 20:30 Claude `dls.im mechanical` — `dls.im` 完成 374/380 檔，skip 6（4 IFix 整族 + Properties/AssemblyInfo + UnitySourceGeneratedAssemblyMonoScriptTypes_v1）；用 `tools/restore_phase2.py --apply` 機械翻譯：271 個 protobuf 訊息類由 fields 重生 Google.Protobuf v3 標準模板（Parser/Clone/Equals/Hash/WriteTo/CalculateSize/MergeFrom）；43 個純 enum/interface/容器類砍 attribute + Ghidra 即合格；3 個 mechanical-review；57 個 needs-llm（ILSpy 整檔無法反編譯的 controller/data/sender 等）依 SOP §5 保留乾淨 stub（砍 Ghidra）+ file header 加 ILSpy could not decompile 註解。grep marker=0、檔數對齊、抽 10 檔通過。同 batch 也覆寫掉上次 session 在 `protomsg/` 留下的 45 個空殼（return null + ILSpy 註解），改為腳本機械生成的實質 protobuf 模板。腳本同步補強：UnitySourceGeneratedAssemblyMonoScriptTypes_v1.cs 加入 ARTIFACT_NAMES、`[Il2CppDummyDll.Token/Address/FieldOffset]` fully-qualified 形式也被砍、純容器類不被誤判 empty-body、新增 `--apply` 旗標。
