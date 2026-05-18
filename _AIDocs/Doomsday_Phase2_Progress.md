@@ -1,6 +1,6 @@
 # Doomsday Phase2 Annotated→Final — 多 agent 平行協調
 
-> 最後更新：2026-05-18 20:30（Claude 用 tools/restore_phase2.py 機械翻譯完成 dls.im 380 檔）
+> 最後更新：2026-05-18 23:45（撤回 Phase2 程式翻譯路線；Final 改回人工/LLM 還原）
 > 目的：協調 Claude (judy-cli) + Codex 平行翻譯，避免重複作業
 > 權威 SOP：見 §「Codex 必讀清單」
 
@@ -18,7 +18,7 @@
 | dls.framework.unsafe | 4 | 4 | ✅ 完成 | Claude Batch-1 |
 | dls.framework | 547 | 2 | 🟡 partial (S1 早期 sample) | — 未認領 |
 | dls.game | 7,828 | 45 | 🟡 partial (S1 Launch/Login/MainScene/Cache 已完成) | — 未認領 |
-| dls.im | 380 | 374 | ✅ 完成（6 skip：4 IFix + AssemblyInfo + UnitySourceGenerated；57 needs-llm 依 SOP §6 保留 Ghidra inline） | Claude (tools/restore_phase2.py --apply) |
+| dls.im | 380 | 374 | ⚠️ 需重檢（先前為程式翻譯產物，不列品質基準） | — 待重新認領 |
 | dls.message | 7,867 | 0 | ⬜ 未開始 | — 未認領 |
 | dls.plugins.processcontext | 6 | 6 | ✅ 完成 | Claude Batch-1 |
 | dls.ui.base | 11,128 | 0 | ⬜ 未開始（最大 dll） | — 未認領 |
@@ -36,7 +36,7 @@
 | USDK.Module.Push.Editor | 46 | 46 | ✅ 完成 | Claude Batch-9 |
 | USDK.Windows | 1,776 | 0 | ⬜ 未開始 | — 未認領 |
 
-**進度總計**：Annotated 35,802 檔，有效 Final 落地 1,122 檔（含 dls.im 機械翻譯 374 檔）≈ **3.1%**
+**進度總計**：Annotated 35,802 檔，有效 Final 落地 748 檔（不含 dls.im 先前程式翻譯產物 374 檔）≈ **2.1%**
 
 ---
 
@@ -166,6 +166,4 @@
 - 2026-05-18 14:47 Codex `Claude-C2-tail-redo` — `USDK.Foundation` 重做 25 檔，完成 123/123；抽查 `GPCUIFramework` / `GPCUIModuleBaseBehaviour` / loader/provider/helper 類，已從空殼改為 field-backed property、singleton、Unity object/component、loader fallback 等可讀 C# 實作
 - 2026-05-18 14:47 Codex `Claude-C1-tail-redo` — `USDK.Module.CPD.Editor` 重做 12 檔，完成 40/40；抽查 CPD diagnosis / metric / bridge command 類，已還原 event add/remove、ctor 初始化、scene metric JSON、dispose/lazy init 等邏輯
 - 2026-05-18 14:47 Codex `Claude-C3-tail-redo` — `behaviac.runtime` 重做 35 檔，完成 177/177；抽查 `Agent` / `Workspace` / `MiniXmlParser` / behavior task 類，已改為 behaviac runtime 風格實作，剩餘 `return null/default` 為 not found / fallback / disabled path 語意
-- 2026-05-18 20:30 Claude `dls.im mechanical` — `dls.im` 完成 374/380 檔，skip 6（4 IFix 整族 + Properties/AssemblyInfo + UnitySourceGeneratedAssemblyMonoScriptTypes_v1）；用 `tools/restore_phase2.py --apply` 機械翻譯：271 個 protobuf 訊息類由 fields 重生 Google.Protobuf v3 標準模板（Parser/Clone/Equals/Hash/WriteTo/CalculateSize/MergeFrom）；43 個純 enum/interface/容器類砍 attribute + Ghidra 即合格；3 個 mechanical-review；57 個 needs-llm（ILSpy 整檔無法反編譯的 controller/data/sender 等）依 SOP §5 保留乾淨 stub（砍 Ghidra）+ file header 加 ILSpy could not decompile 註解。grep marker=0、檔數對齊、抽 10 檔通過。同 batch 也覆寫掉上次 session 在 `protomsg/` 留下的 45 個空殼（return null + ILSpy 註解），改為腳本機械生成的實質 protobuf 模板。腳本同步補強：UnitySourceGeneratedAssemblyMonoScriptTypes_v1.cs 加入 ARTIFACT_NAMES、`[Il2CppDummyDll.Token/Address/FieldOffset]` fully-qualified 形式也被砍、純容器類不被誤判 empty-body、新增 `--apply` 旗標。
-- 2026-05-18 23:05 Claude `dls.im mechanical 重跑（SOP §6 新規則）` — 使用者觀察到 `ChatData.cs` 等 needs-llm 檔機械翻譯後 method body 全空（簽名 / 欄位 / 型別保留但業務邏輯失去），決議新增 SOP §6 規則：**腳本工具翻譯時**遇無法翻譯的 method body，**保留原 Ghidra pseudocode 註解**（LLM 翻譯不適用，仍依 §5 還原業務 API）。`restore_phase2.py` --apply 對 needs-llm 路徑改為 `restore_unhandled_blocks=True`、header 註解改為「Mechanical translation could not decompile bodies; Ghidra pseudocode preserved inline per SOP §6」。dls.im 重跑後 57 個 needs-llm 檔 method body 內保留 Ghidra 偽碼，例如 `ChatData.cs` 464 行 → 8218 行（97 個 RVA 區塊回來），mechanical-* 314 檔仍乾淨（grep marker=0）。
-- 2026-05-18 23:30 Claude `phase2_ghidra_translator.py + dls.im 再重跑` — 使用者要求腳本進一步「公式化機械翻譯」needs-llm method body 至可讀 C#（前提：不能加油添醋）。建立 `tools/phase2_ghidra_translator.py` 保守白名單翻譯模組：抽 field offset 表 → 拆 Ghidra 區塊 → 9 個 pass（strip function header / merge 跨行 statement / strip static init guard / strip IFix fast-path / strip runtime helpers / 合併 alloc+ctor+offset 三步為 `_field = new Type();` / field 讀取 `*(T*)(this+0xN)` → `_fieldName` / stdlib 白名單翻譯 Dictionary/List 的 ContainsKey/get_Item/Add/Remove/set_Item/Count/Clear/Contains / 變數 uVar/lVar/cVar → v1/v2 / param_1 → this、param_N → 對應參數名 / hex 字面量 0xffff...ff → -1L）→ 未識別行 wrap 為 `// Ghidra: <原文>`。restore_phase2.py needs-llm 路徑 import 並呼叫 translate_file。dls.im 重跑：57 個 needs-llm 檔 94/96 method 成功 translate，例如 `ChatData.cs` 8218 → 4094 行，ctor 19 個 dict/list 初始化中 18 個翻成 `_field = new Dictionary<K, V>();`，`GetJoinTagMsgByTagKey` 翻成 `_chatJoinTagTimeDic.ContainsKey(tagKey)` + `return -1L`。剩餘 ~2 個 method 仍保留 Ghidra inline（無法決定性對應）。
+- 2026-05-18 23:45 Codex `Phase2 rule cleanup` — 撤回程式翻譯路線；dls.im 先前產物改列需重檢，後續 Final 一律回到人工/LLM 依 Annotated 還原

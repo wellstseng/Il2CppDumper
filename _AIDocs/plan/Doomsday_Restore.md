@@ -1,7 +1,8 @@
-# Doomsday 完整還原計畫（機械式合併）
+# Doomsday Annotated 產出計畫（S0）
 
 > 建立日期：2026-05-17
-> **方法論**：ILSpy skeleton + Ghidra pseudocode → Python regex 機械合併（無 LLM）
+> **方法論**：ILSpy skeleton + Ghidra pseudocode → 產生 `Annotated/` 對照資料
+> **界線**：本文件只描述 S0 的 `Annotated/` 生成；Phase2 `Final/` 還原不走程式/腳本翻譯，依 `Doomsday_Phase2_SOP.md` 由人工/LLM 處理
 > 參考：Launcher_Archiver 留下的 `annotate_with_pseudocode.py` 已驗證此 pipeline
 
 ---
@@ -47,7 +48,7 @@
 
 ---
 
-## 3. 方法論：機械式合併（無 LLM）
+## 3. 方法論：產出 Annotated 對照資料
 
 ```
 ILSpy 反編譯 25 個業務 DLL
@@ -61,7 +62,7 @@ Ghidra 載入 GameAssembly.dll + Il2CppDumper 自動化腳本標符號
    ↓
 pseudocode/<RVA_hex>__<method_name>.c   每個 method 一個 .c 檔，Ghidra 反編譯結果
 
-   ↓ annotate_with_pseudocode.py 機械合併
+   ↓ annotate_with_pseudocode.py 合併對照資料
         - regex 抓 [Address(RVA="0x...")] 的 RVA
         - 查 pseudocode/{RVA_hex}__*.c
         - 用 /* === Ghidra pseudocode === */ 區塊註解貼到 method body 內最前面
@@ -69,13 +70,13 @@ pseudocode/<RVA_hex>__<method_name>.c   每個 method 一個 .c 檔，Ghidra 反
 RestoredSolution/Annotated/<dll>/<Type>.cs   每 method 有完整 Ghidra pseudocode 註解
 ```
 
-成本：**$0 LLM token**。全機械處理，秒級吞吐。
+成本：**$0 LLM token**。此處只產生 Annotated，不代表 Final 可用程式批次翻譯。
 
 ---
 
 ## 4. Sprint 拆分
 
-### S0：機械合併（必做、~1-2 天）
+### S0：Annotated 生成（必做、~1-2 天）
 
 | 步驟 | 動作 | 狀態 | 執行者 |
 |------|------|------|--------|
@@ -86,7 +87,7 @@ RestoredSolution/Annotated/<dll>/<Type>.cs   每 method 有完整 Ghidra pseudoc
 | 0-5 | `Input/Doomsday/_scripts/decompile_dummydll.sh` 跑 ilspycmd 反編譯 25 dll → `RestoredSolution/_raw/` | 🟡 進行中 | AI |
 | 0-6 | Ghidra GUI 載入 GameAssembly.dll + global-metadata.dat，跑 Il2CppDumper 自動腳本標符號（首次分析 8-12h，要分配 24GB JVM heap） | ⏳ 待使用者 | **使用者** |
 | 0-7 | Ghidra Script Manager 跑 `ExportPseudocode.java` 批次匯出 pseudocode（30 萬 method 估 4-12h） | ⏳ 待使用者 | **使用者** |
-| 0-8 | 改 `annotate_with_pseudocode.py` 路徑跑機械合併 → `RestoredSolution/Annotated/` | 待 | AI |
+| 0-8 | 改 `annotate_with_pseudocode.py` 路徑生成 `RestoredSolution/Annotated/` | 待 | AI |
 | 0-9 | 寫 `RestoredSolution/_NOTES.md` 統計：annotated/skipped 數、命中率 | 待 | AI |
 
 **S0 通過條件**：
@@ -120,7 +121,7 @@ S1+ 沿用 Launcher 之前確立的還原規則（見附錄 B）。
 | **LLM token 成本** | **$0** |
 | Session 數 | **1**（S0 即可全部完成） |
 
-> 註：先前計畫文件的「$6K-$50K / 3-6 個月」是把 mechanical merge 誤讀成 LLM-per-method 翻譯造成的高估，已修正。
+> 註：先前計畫文件的「$6K-$50K / 3-6 個月」是把 S0 Annotated 生成誤讀成 LLM-per-method 翻譯造成的高估，已修正。
 
 ---
 

@@ -99,15 +99,10 @@ if (DAT_18b62b17b == '\0') {
 
 ## 6. 不確定時的處理
 
+- **Phase2 不走程式/腳本翻譯**：Final 由人工/LLM 依 Annotated pseudocode 還原成 .NET source；不要用白名單工具批次改寫 method body
 - **不查就不要推測**：StringLiteral_N 一定查 `script.json` 的 ScriptString[N-1]（1-based）
 - **真不知道的 vtable**：保留 `stream.vtable_348(args)` + 短行尾註解 `// best guess / unknown slot`
 - **Symbol collision**（Ghidra base ctor 解析成不相關的 type）：當作隱式 base call，不寫不註解。pseudocode 註解區塊整體保留在 `Annotated/`，Final 不需要重複
-- **腳本工具翻譯時的例外**（**前提：用 `tools/restore_phase2.py` + `phase2_ghidra_translator.py` 機械工具，非 LLM**）：
-  - 工具走**保守白名單翻譯**：100% 可決定性對應的模式（field offset 表查得到、stdlib symbol 在白名單、IFix/init guard/null trap 框架雜訊）→ 翻成 C# 寫法
-  - 工具**無法翻譯**的行（未知 demangled symbol / 複雜泛型 / 控制流變體 / 不確定語義）→ **保留原 Ghidra pseudocode** 以 `// Ghidra: <原文>` 行內註解形式，不發明、不推測
-  - 不能加油添醋：寧可保留 Ghidra 註解，不要編造看似合理但無依據的 C# 邏輯
-  - 在檔案 header 加一行：`// Note: Method bodies auto-translated from Ghidra pseudocode by tools/phase2_ghidra_translator.py (conservative whitelist; untranslated parts retained as // Ghidra: comments).`
-  - 不適用 LLM 翻譯：LLM 仍應依 §5 嘗試從 demangled symbol 還原業務 API，不要把整段 Ghidra 抄進去
 
 ---
 
