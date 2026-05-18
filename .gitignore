@@ -361,3 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+.DS_Store
+.claude/memory/personal/
+
+# Local sample inputs (reverse-engineering assets, do not commit)
+/Input/
+/publish/
