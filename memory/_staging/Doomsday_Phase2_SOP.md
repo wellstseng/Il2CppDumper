@@ -102,6 +102,11 @@ if (DAT_18b62b17b == '\0') {
 - **不查就不要推測**：StringLiteral_N 一定查 `script.json` 的 ScriptString[N-1]（1-based）
 - **真不知道的 vtable**：保留 `stream.vtable_348(args)` + 短行尾註解 `// best guess / unknown slot`
 - **Symbol collision**（Ghidra base ctor 解析成不相關的 type）：當作隱式 base call，不寫不註解。pseudocode 註解區塊整體保留在 `Annotated/`，Final 不需要重複
+- **腳本工具翻譯時的例外**（**前提：用 `tools/restore_phase2.py` 之類機械工具，非 LLM**）：
+  - 若工具**無法翻譯**某 method body（ILSpy 整檔反編譯失敗，body 純 Ghidra 偽碼），則**保留原 Ghidra pseudocode 註解區塊**在 method body 內，**不要砍**
+  - 在檔案 header 加一行：`// Note: Mechanical translation could not decompile bodies. Ghidra pseudocode preserved inline per SOP §6 for reference.`
+  - 理由：腳本沒有判斷力反推 pseudocode 邏輯，砍掉就完全失去業務語意參考；保留在 body 內讓讀者單檔即可看完整資訊，免跳 `Annotated/` 對照
+  - 不適用 LLM 翻譯：LLM 仍應依 §5 嘗試從 demangled symbol 還原業務 API，不要把整段 Ghidra 抄進去
 
 ---
 

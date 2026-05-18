@@ -35,7 +35,7 @@ python3 tools/restore_phase2.py <dll> --apply
 | mechanical-ok | 純 enum / interface / 空容器類 | 寫（transform 後） |
 | mechanical-protobuf-stub | `IMessage<>` + Google.Protobuf 訊息類，從 fields 重生 v3 標準模板 | 寫（generate_protobuf） |
 | mechanical-review | 含 Ghidra 但 method body 已被 enhance 補實 | 寫（transform 後） |
-| needs-llm | ILSpy 整檔無法反編譯，body 全空 | 寫 transform 後（跳過 restore_unhandled_blocks）+ file header 加 ILSpy could not decompile 註解 |
+| needs-llm | ILSpy 整檔無法反編譯，body 全空 | 寫 transform 後（`restore_unhandled_blocks=True` 把 Ghidra 留在 body 內，依 SOP §6 腳本翻譯例外）+ file header 加「Ghidra pseudocode preserved inline」註解 |
 
 ## protobuf 模板生成範圍
 
@@ -45,7 +45,7 @@ python3 tools/restore_phase2.py <dll> --apply
 
 - `[Il2CppDummyDll.Token/Address/FieldOffset(...)]` fully-qualified attribute 形式也會被砍（ATTR_RE 涵蓋）
 - 純容器類（只有 class declaration 無 method）不被誤判為 empty-body-remains
-- `restore_unhandled_blocks()` 在 needs-llm 路徑下會跳過（否則整檔 ILSpy 失敗時會把 Ghidra 還原回來）
+- `restore_unhandled_blocks()` 在 needs-llm 路徑下會**啟用**（依 SOP §6 腳本翻譯例外，把 Ghidra pseudocode 保留在 method body 內當參考；非 needs-llm 路徑同樣啟用，補實 ctor / property 等少數空 body 場合）
 
 ## 戰績
 

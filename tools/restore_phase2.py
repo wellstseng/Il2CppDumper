@@ -478,8 +478,8 @@ def main() -> int:
     missing_counter: Counter[str] = Counter()
     APPLY_STATUSES = {"mechanical-ok", "mechanical-protobuf-stub", "mechanical-review"}
     APPLY_LLM_NOTE = (
-        "// Note: ILSpy could not decompile method bodies for this class. "
-        "Bodies retained empty per SOP §5; see Annotated source for Ghidra pseudocode reference."
+        "// Note: Mechanical translation could not decompile method bodies. "
+        "Ghidra pseudocode preserved inline per SOP §6 for reference."
     )
     applied_counter: Counter[str] = Counter()
     needs_llm_paths: list[str] = []
@@ -513,8 +513,8 @@ def main() -> int:
                 dst.write_text(out, encoding="utf-8")
                 applied_counter[status] += 1
             elif args.apply and status == "needs-llm":
-                clean_out = transform(src, Path(args.dll) / rel, restore_unhandled=False)
-                lines = clean_out.splitlines()
+                preserved_out = transform(src, Path(args.dll) / rel, restore_unhandled=True)
+                lines = preserved_out.splitlines()
                 insert_at = 1 if lines and lines[0].startswith("// Annotated:") else 0
                 lines.insert(insert_at, APPLY_LLM_NOTE)
                 dst = final_root / rel
