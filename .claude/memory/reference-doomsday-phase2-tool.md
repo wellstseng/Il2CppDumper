@@ -1,4 +1,4 @@
-# Doomsday Phase 2 — restore_phase2.py 機械翻譯工具
+# Doomsday Phase 2 — restore_phase2.py + phase2_ghidra_translator.py 機械翻譯工具鏈
 
 - Scope: project
 - Confidence: [固]
@@ -35,7 +35,7 @@ python3 tools/restore_phase2.py <dll> --apply
 | mechanical-ok | 純 enum / interface / 空容器類 | 寫（transform 後） |
 | mechanical-protobuf-stub | `IMessage<>` + Google.Protobuf 訊息類，從 fields 重生 v3 標準模板 | 寫（generate_protobuf） |
 | mechanical-review | 含 Ghidra 但 method body 已被 enhance 補實 | 寫（transform 後） |
-| needs-llm | ILSpy 整檔無法反編譯，body 全空 | 寫 transform 後（`restore_unhandled_blocks=True` 把 Ghidra 留在 body 內，依 SOP §6 腳本翻譯例外）+ file header 加「Ghidra pseudocode preserved inline」註解 |
+| needs-llm | ILSpy 整檔無法反編譯，body 全空 | 寫 transform 後（restore Ghidra）+ `phase2_ghidra_translator.translate_file()` 保守白名單翻譯 method body：可決定性對應翻成 C#，剩餘行 wrap 為 `// Ghidra:` 註解。前提：**不加油添醋**（SOP §6） |
 
 ## protobuf 模板生成範圍
 
@@ -47,12 +47,22 @@ python3 tools/restore_phase2.py <dll> --apply
 - 純容器類（只有 class declaration 無 method）不被誤判為 empty-body-remains
 - `restore_unhandled_blocks()` 在 needs-llm 路徑下會**啟用**（依 SOP §6 腳本翻譯例外，把 Ghidra pseudocode 保留在 method body 內當參考；非 needs-llm 路徑同樣啟用，補實 ctor / property 等少數空 body 場合）
 
+## phase2_ghidra_translator.py 翻譯 pipeline（needs-llm 路徑）
+
+1. 抽 field offset → name/type 表（從 Annotated.cs `[FieldOffset(Offset="0xN")]`）
+2. 拆 Ghidra 區塊（`/* === Ghidra ... === end pseudocode === */`）
+3. unwrap → strip function header → merge 跨行 statement
+4. strip static init guard / IFix fast-path / runtime helpers（FUN_18055b140/a480/b3e0/class_init）
+5. 合併 alloc + ctor + offset 三步為 `_field = new Type();`
+6. line-level translate：field 讀取 `*(T*)(this+0xN)` → `_fieldName`、stdlib 白名單（Dictionary/List 的 ContainsKey/get_Item/Add/Remove/set_Item/Count/Clear/Contains）、變數歸一 uVar/lVar → v1/v2、param_1 → this/param_N → 參數名、hex 字面量
+7. 未識別行 wrap 為 `// Ghidra: <原文>`（保持忠實，不發明）
+
 ## 戰績
 
-- dls.im 380 → Final 374（commit `a697ab6`，2026-05-18）
+- dls.im 380 → Final 374（commit `a697ab6` → `a7812ac` → `e1eaafa`，2026-05-18）
   - 271 protobuf-stub + 43 mechanical-ok + 3 mechanical-review + 57 needs-llm + 6 skip
-  - marker grep=0、檔數對齊、抽 10 檔通過
-  - 同 batch 覆寫掉上次 session 在 `protomsg/` 留下的 45 個 return null 空殼
+  - needs-llm 路徑：94/96 method 成功翻譯為可讀 C#，例如 `ChatData.cs` 8218 → 4094 行
+  - marker grep 在 mechanical-* 314 檔=0；needs-llm 含 `// Ghidra:` 註解為設計
 
 ## 後續使用建議
 

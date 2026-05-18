@@ -478,8 +478,8 @@ def main() -> int:
     missing_counter: Counter[str] = Counter()
     APPLY_STATUSES = {"mechanical-ok", "mechanical-protobuf-stub", "mechanical-review"}
     APPLY_LLM_NOTE = (
-        "// Note: Mechanical translation could not decompile method bodies. "
-        "Ghidra pseudocode preserved inline per SOP §6 for reference."
+        "// Note: Method bodies auto-translated from Ghidra pseudocode by tools/phase2_ghidra_translator.py "
+        "(conservative whitelist; untranslated parts retained as // Ghidra: comments)."
     )
     applied_counter: Counter[str] = Counter()
     needs_llm_paths: list[str] = []
@@ -514,6 +514,18 @@ def main() -> int:
                 applied_counter[status] += 1
             elif args.apply and status == "needs-llm":
                 preserved_out = transform(src, Path(args.dll) / rel, restore_unhandled=True)
+                # 嘗試用 Ghidra translator 翻譯各 method body
+                try:
+                    from phase2_ghidra_translator import translate_file
+                    # 找 class name
+                    cls_m = re.search(r"\b(?:class|struct|interface)\s+(\w+)", preserved_out)
+                    class_name = cls_m.group(1) if cls_m else ""
+                    if class_name:
+                        preserved_out, tr_count, tr_total = translate_file(
+                            src, preserved_out, class_name
+                        )
+                except Exception as e:
+                    print(f"  ! translate_file failed on {rel}: {e}")
                 lines = preserved_out.splitlines()
                 insert_at = 1 if lines and lines[0].startswith("// Annotated:") else 0
                 lines.insert(insert_at, APPLY_LLM_NOTE)
