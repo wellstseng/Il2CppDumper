@@ -2,6 +2,16 @@
 
 > 僅記錄 `_AIDocs/` 知識庫的新增 / 修改 / 廢止。原始碼變更請看 `git log`。
 
+## 2026-05-18（晚）
+
+### Doomsday Phase 2 — dls.im 完成 + 新增 `tools/restore_phase2.py`
+
+- 更新：`Doomsday_Phase2_Progress.md` §1 表（dls.im 374/380 ✅、各 in-flight 標 ✅ 收尾）+ §9 batch log 追加 `Claude dls.im mechanical` 紀錄
+- 新增（git tracked 工具，非 _AIDocs）：`tools/restore_phase2.py` 機械翻譯腳本（dry-run / --write-preview / --apply 三模式；自動分類 mechanical-ok/protobuf-stub/review/needs-llm/skip）。用法、邊界 case、戰績紀錄於 `.claude/memory/reference-doomsday-phase2-tool.md`
+- 補充：`.gitignore` 加排 `memory/_staging/phase2_mechanical_preview*/`（腳本副產品）
+
+commit `a697ab6`（已 push origin/master）。
+
 ## 2026-05-18
 
 ### Doomsday Phase 2 — IFix-S1 完成（無 _AIDocs 文件變更）

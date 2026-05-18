@@ -4,5 +4,6 @@
 
 | Atom | Path | Trigger |
 |------|------|---------|
+| reference-doomsday-phase2-tool | reference-doomsday-phase2-tool.md | Doomsday Phase 2 / Annotated→Final / restore_phase2.py / 機械翻譯 / dls.* / USDK.* |
 
 > Project-Aliases:
