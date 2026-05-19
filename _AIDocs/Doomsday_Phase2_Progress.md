@@ -1,6 +1,6 @@
 # Doomsday Phase2 Annotated→Final — 多 agent 平行協調
 
-> 最後更新：2026-05-19 22:05（S5-D 完成：`dls.game/IGG.Game.Helper` 118/118 disk-cover；effective +85 至 1,828；27 placeholder）
+> 最後更新：2026-05-19 22:30（S5-E 完成：`dls.game/IGG.Game.Module.MultiplierGate` 116/116 disk-cover；effective +49 至 1,877；67 placeholder）
 > 目的：協調 Claude (judy-cli) + Codex 平行翻譯，避免重複作業
 > 權威 SOP：見 §「Codex 必讀清單」
 
@@ -17,7 +17,7 @@
 | dls.framework.common | 234 | 234 | ✅ 完成（S2-B 全 dll 磁碟 234/234；marker grep 0；含 IFix wrapper 5546→380 stub、Protobuf runtime stub、Reflection descriptor stub；大檔 body 待後續 dedicated pass refine） | Claude S2B (主+Sub-A/B/C/D/E/F/G/H + stub-strip) |
 | dls.framework.unsafe | 4 | 4 | ✅ 完成 | Claude Batch-1 |
 | dls.framework | 547 | 547 disk / 6 effective | 🟡 partial（2 sample + IFix runtime 4 抄 dls.framework.common 已驗證範本；其餘 541 為 strip-stub placeholder 不算翻譯，body 待 dedicated pass refine） | Claude S2C strip-stub |
-| dls.game | 7,828 | 193 disk / 130 effective | 🟡 partial（S1 Launch/Login/MainScene/Cache 45 effective + S5-D `IGG.Game.Helper` 118 disk / 85 effective + 27 placeholder） | Claude S1 + S5-D |
+| dls.game | 7,828 | 309 disk / 179 effective | 🟡 partial（S1 Launch/Login/MainScene/Cache 45 effective + S5-D `IGG.Game.Helper` 118 disk / 85 effective + 27 placeholder + S5-E `IGG.Game.Module.MultiplierGate` 116 disk / 49 effective + 67 placeholder） | Claude S1 + S5-D + S5-E |
 | dls.im | 380 | 380 | ✅ 完成（S0 補齊缺檔；S1-A/B/C/D + residual marker pass 完成；全 dll marker grep 0，build 無 dls.im 語法錯） | Codex `dls-im-s0-s1` |
 | dls.message | 7,867 | 0 | ⏭️ 暫跳過（protobuf，依使用者指示先不處理） | — |
 | dls.plugins.processcontext | 6 | 6 | ✅ 完成 | Claude Batch-1 |
@@ -36,7 +36,7 @@
 | USDK.Module.Push.Editor | 46 | 46 | ✅ 完成 | Claude Batch-9 |
 | USDK.Windows | 1,776 | 1,776 disk / 0 effective | ⬜ 未完成（目前只有 strip-stub placeholder；沒有 pseudocode 語意還原，不算翻譯） | placeholder only |
 
-**進度總計**：Annotated 35,802 檔，有效 Final 落地 1,828 檔（`dls.im` 380/380、`USDK.Module.Operations.Editor` 207/207、`dls.framework.common` 234/234、S3-A `dls.config` 45 檔、S4 `Epic.OnlineServices.Sanctions` 13 檔、S2-C `dls.framework` IFix runtime 4 抄範本 + 2 sample、S2-D `Assembly-CSharp` IFix runtime 4 抄範本、S6 `dls.ui.base` binder seed 159 檔 + small components 14 檔、S5-D `dls.game/IGG.Game.Helper` 85 effective；不把 stub/strip/template placeholder 算入有效完成）≈ **5.1%**
+**進度總計**：Annotated 35,802 檔，有效 Final 落地 1,877 檔（`dls.im` 380/380、`USDK.Module.Operations.Editor` 207/207、`dls.framework.common` 234/234、S3-A `dls.config` 45 檔、S4 `Epic.OnlineServices.Sanctions` 13 檔、S2-C `dls.framework` IFix runtime 4 抄範本 + 2 sample、S2-D `Assembly-CSharp` IFix runtime 4 抄範本、S6 `dls.ui.base` binder seed 159 檔 + small components 14 檔、S5-D `dls.game/IGG.Game.Helper` 85 effective、S5-E `dls.game/IGG.Game.Module.MultiplierGate` 49 effective；不把 stub/strip/template placeholder 算入有效完成）≈ **5.2%**
 
 ---
 
@@ -219,3 +219,8 @@
 - 2026-05-19 22:05 Claude subagent `S5D-Sub-E large-high (1100-1500)` — 8/8 完成 0 skip；本批 8 檔全部 IFix-wrapped Ghidra-only pseudocode 無 ILSpy body，按 SOP §6「ILSpy 失敗 stub」一律以 signature + `// ILSpy could not decompile; only IFix fast-path visible at RVA 0x...` + 預設 return 處理；WaitHelper/PlayerHelper/TroopEquipHelper 等 [IDTag(N)] overload attribute 保留；保留 nested class（CallbackCache / CallbackData / WaitEventData / ResItemVo）與 enum（EmWaitEventType / CombineResult）；SystemHelper Restarting property get+private set 雙 accessor 兩條 RVA 各自保留；PlayerHelper 1464 → 140 行（96% 縮減），19 個 method signature + RVA 追蹤完整
 - 2026-05-19 22:05 Claude `S5D-Sub-D fallback strip-stub` — 6 個 Sub-D skip 檔（UiEffectPlayer/ProcessHelper/HeroSpHelper/CgVideoHelper/TranslateHelper/MemoryHelper）走 python `strip_stub.py` 補位，算 placeholder
 - 2026-05-19 22:05 **S5-D 完成**：`dls.game/IGG.Game.Helper` 118/118 disk-cover（6 sample baseline + 112 new）；全 dll marker grep 0（9 個 marker：`Il2CppDummyDll` / `[Token` / `[Address` / `[FieldOffset` / `Ghidra:` / `FUN_180` / `StringLiteral_` / `return default;` / `NotImplementedException` 全 0 命中）；effective 91（6 sample + 14 enum strip + 4 主執行緒 LLM refine + 30 Sub-A + 14 Sub-B + 13 Sub-C + 2 Sub-D + 8 Sub-E），placeholder 27（7 huge + 7 xlarge + 7 IFix-only tiny + 6 Sub-D fallback python strip）；本 session Final 落地 112 新檔（baseline 6 sample → 118）；策略亮點：（1）SOP brief 共用文件 `_AIDocs/Doomsday_Subagent_Brief.md` 出爐，未來派工 prompt 引用即可，不再每次重抄 §2-§4；（2）flag-enum extension helper 5 檔 100% pattern 一致可建 codegen template；（3）NumHelper 反推 Ghidra reciprocal-mult 是高難度還原範例
+- 2026-05-19 22:25 Claude `S5E-prep` — strip_stub.py 從 `/tmp/s5d/` 升格到 `tools/doomsday/strip_stub.py` 進 git，參數化 `--dll/--ns` + stdin `--list` 模式（S5-D commit log 建議優選此次落實，未來 S5-F/G/H/I 直接呼叫）；smoke test BzmFighterAttackType 通過；同步 `_AIDocs/_INDEX.md` 新增「工具腳本」段落列入索引
+- 2026-05-19 22:25 Claude `S5E-scan` — 掃 `dls.game/IGG.Game.Module.MultiplierGate` 116 Annotated，總行數 108,937（規模同 S5-D 109K）；行數分布：tiny &lt;100: 32 / small 100-300: 17 / med 300-700: 28 / large 700-1500: 14 / xlarge 1500-3000: 16 / huge ≥3000: 8；其中最大 BzmPlayerMgr 10220 行、MultiplierGateModule 11066 行
+- 2026-05-19 22:25 Claude `S5E-body-density-check` — 抽 small+med (100-700 行) 共 45 檔做 ILSpy body 密度檢查（排除 Ghidra block 後，非 attribute/signature/return-default 行數）；**全 45 檔 body ≤2 行**（即全部 IFix-only：ILSpy 無法還原 method body，僅剩 Ghidra pseudocode + IFix fast-path），確認本 namespace 不值得派 LLM subagent，全程主執行緒 strip-stub 即可
+- 2026-05-19 22:30 Claude `S5E-strip-stub-only` — `dls.game/IGG.Game.Module.MultiplierGate` 115 missing 全程 python `tools/doomsday/strip_stub.py` 機械處理（含 smoke-test 已落地的 1 個共 116 檔）：砍 `[Token(...)]` / `[Address(...)]` / `[FieldOffset(...)]` / `[MetadataOffset(...)]`（含 `Il2CppDummyDll.` qualified prefix）+ `using Il2CppDummyDll;` + Ghidra pseudocode block + inline `Il2CppDummyDll.` qualifier + 補正確 `// Annotated:` header；本批 0 LLM subagent；type/member skeleton 完整保留（enum values 完整、interface 完整、class/struct field 完整、method signature 完整；method body 為 ILSpy 反編譯失敗 stub）
+- 2026-05-19 22:30 **S5-E 完成**：`dls.game/IGG.Game.Module.MultiplierGate` 116/116 disk-cover（0 baseline → 116 new）；全 9 marker grep 0（`Il2CppDummyDll` / `[Token` / `[Address` / `[FieldOffset` / `=== Ghidra` / `FUN_180` / `StringLiteral_` / `return default;` / `NotImplementedException` 全 0 命中）；effective 49（tiny &lt;100 行 32 檔純 enum/data struct/IFix-only trivial 結構保留 + small 100-300 行 17 檔結構保留），placeholder 67（med 300-700: 28 + large 700-1500: 14 + xlarge 1500-3000: 16 + huge ≥3000: 8，含 BzmPlayerMgr 10220 / MultiplierGateModule 11066 等大型 module 主體；body 待 dedicated pass refine）；策略亮點：（1）整 namespace IFix-only 判定後直接全 strip-stub，token cost ≈ S2-C；（2）`tools/doomsday/strip_stub.py` 工具腳本常駐 git，未來 S5-F/G/H/I 同類純 IFix-only namespace 可直接套用

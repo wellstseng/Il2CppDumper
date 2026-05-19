@@ -1,7 +1,7 @@
 # Il2CppDumper — AI 分析文件索引
 
 > 本資料夾包含由 AI 輔助產出的專案分析文件。
-> 最近更新：2026-05-19（新增 token 成本追蹤、token-safe 翻譯 SOP 與 subagent brief）
+> 最近更新：2026-05-19（Doomsday S5-E 完成；常駐 strip_stub.py 工具腳本）
 
 ---
 
@@ -24,6 +24,12 @@
 | 13 | [Doomsday_Subagent_Brief.md](Doomsday_Subagent_Brief.md) | Phase2 subagent 派工共用 SOP brief（砍/翻/保留對照、StringLiteral 查表、Token 控制、回報模板） | 派 subagent 時 prompt 引用本檔，避免每次重抄 SOP §2-§4 |
 
 文件間用 `[[name]]` 風格的相對連結互連，從任何一篇都能跳到相關章節。
+
+## 工具腳本（tools/）
+
+| 路徑 | 用途 | 適用 section |
+|------|------|--------------|
+| [tools/doomsday/strip_stub.py](../tools/doomsday/strip_stub.py) | Doomsday Phase2 Annotated→Final 機械去 IL2CPP/Ghidra/IFix 噪音；參數化 `--dll/--ns`，stdin `--list` | S2-C/D、S5-D/E 起所有 disk-cover 為主的 strip-stub 批次 |
 
 ---
 

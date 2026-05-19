@@ -4,6 +4,17 @@
 
 ## 2026-05-19
 
+### 更新 — Doomsday Phase2 S5-E 完成 dls.game/IGG.Game.Module.MultiplierGate 116/116（全 IFix-only strip-stub-only）
+
+- 新增：`tools/doomsday/strip_stub.py` — 從 `/tmp/s5d/strip_stub.py` 升格進 git，參數化 `--dll/--ns` + stdin `--list`，未來 S5-F/G/H/I 同類 IFix-only namespace 可直接套用
+- 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Module.MultiplierGate/` — 新增 116 個檔（0 baseline → 116/116 disk-cover）；effective 49（tiny &lt;100 行 32 檔純 enum/data struct/IFix-only trivial 結構保留 + small 100-300 行 17 檔結構保留）；placeholder 67（med+large+xlarge+huge，含 BzmPlayerMgr 10220 行、MultiplierGateModule 11066 行等大型 module 主體；body 待 dedicated pass refine）
+- 更新：`_AIDocs/_INDEX.md` — 新增「工具腳本」段落收錄 `tools/doomsday/strip_stub.py`
+- 更新：`Doomsday_Phase2_Progress.md` §1 — `dls.game` 由 193 disk / 130 effective 升至 309 disk / 179 effective；§9 補 5 條 S5-E 紀錄（prep / scan / body-density-check / strip-stub-only / 完成總結）；進度總計 effective 1,828 → 1,877 (≈ 5.2%)
+- 更新：`Doomsday_Phase2_Completion_Plan.md` §8 — S5-E 標 ✅ 116/116 disk-cover, 49 effective + 67 placeholder
+- 更新：`Token_Cost_Ledger.md` — 新增 `s5e-full` 批次（~80K 主執行緒 token，0 LLM subagent，對比 S5-D ~850K 約 1/10）
+- 策略亮點：（1）開工先抽 100-700 行共 45 檔做 ILSpy body 密度檢查，發現全 45 檔 body ≤2 行（全 IFix-only），判定整 namespace 不值得派 LLM subagent；「body 密度檢查」決策法則確立：sample 後若全 IFix-only 即走全 strip-stub 配方；（2）`tools/doomsday/strip_stub.py` 工具腳本常駐 git，落實 S5-D commit log 提的「建議優選」
+- 驗證：`dls.game/IGG.Game.Module.MultiplierGate` 全 namespace marker grep 0（9 個 marker：`Il2CppDummyDll` / `[Token` / `[Address` / `[FieldOffset` / `=== Ghidra` / `FUN_180` / `StringLiteral_` / `return default;` / `NotImplementedException` 全 0 命中）
+
 ### 更新 — Doomsday Phase2 S5-D 完成 dls.game/IGG.Game.Helper 118/118
 
 - 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Helper/` — 新增 112 個檔（baseline 6 sample → 118/118 disk-cover）；effective 91（6 sample + 14 enum strip + 4 主執行緒 LLM refine + 30 Sub-A + 14 Sub-B + 13 Sub-C + 2 Sub-D + 8 Sub-E）；placeholder 27（7 huge + 7 xlarge + 7 IFix-only tiny + 6 Sub-D fallback）

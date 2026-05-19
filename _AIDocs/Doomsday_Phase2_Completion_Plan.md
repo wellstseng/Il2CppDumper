@@ -162,7 +162,7 @@ High-priority candidate splits:
 | S5-B | `IGG.Game.Data.Cache.Mail.Type` | 341 |
 | S5-C | `IGG.Game.Notifys` | 155 |
 | S5-D | `IGG.Game.Helper` | ✅ 118/118 disk-cover, 91 effective (含 6 sample) + 27 placeholder |
-| S5-E | `IGG.Game.Module.MultiplierGate` | 116 |
+| S5-E | `IGG.Game.Module.MultiplierGate` | ✅ 116/116 disk-cover, 49 effective + 67 placeholder（全 IFix-only，主執行緒 strip-stub 一次過） |
 | S5-F | `IGG.Game.Module.March.Actor` | 107 |
 | S5-G | `IGG.Game.Module.Common.View` | 104 |
 | S5-H | `IGG.Game.Data.Cache.IM` | 100 |
