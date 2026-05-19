@@ -4,10 +4,22 @@
 
 ## 2026-05-19
 
+### 更新 — Doomsday Phase2 S5-D 完成 dls.game/IGG.Game.Helper 118/118
+
+- 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Helper/` — 新增 112 個檔（baseline 6 sample → 118/118 disk-cover）；effective 91（6 sample + 14 enum strip + 4 主執行緒 LLM refine + 30 Sub-A + 14 Sub-B + 13 Sub-C + 2 Sub-D + 8 Sub-E）；placeholder 27（7 huge + 7 xlarge + 7 IFix-only tiny + 6 Sub-D fallback）
+- 新增：`_AIDocs/Doomsday_Subagent_Brief.md` — Phase2 subagent 派工共用 SOP brief（砍/翻/保留對照、StringLiteral 查表、Token 控制、回報模板），未來 S5/S6 派工 prompt 引用即可，不再重抄 SOP §2-§4
+- 更新：`_AIDocs/_INDEX.md` — 新增第 13 列 `Doomsday_Subagent_Brief.md`
+- 更新：`Doomsday_Phase2_Progress.md` §1 — `dls.game` 由 45 effective 升至 193 disk / 130 effective；§9 補 7 條 S5-D 紀錄（warmup / strip-stub / Sub-A/B/C/D/E / Sub-D fallback / 完成總結）；進度總計 effective 1,743 → 1,828 (≈ 5.1%)
+- 更新：`Doomsday_Phase2_Completion_Plan.md` §8 — S5-D 標 ✅ 118/118 disk-cover, 91 effective + 27 placeholder
+- 更新：`Token_Cost_Ledger.md` — 新增 `s5d-full` 批次（~250K 主執行緒 + 5 subagent，最大 Sub-B 200K, 1M ms）
+- 策略亮點：（1）共用 SOP brief 出爐，省 ~3K token/agent；（2）flag-enum extension helper 5 檔 pattern 100% 一致可建 codegen template；（3）NumHelper 反推 Ghidra reciprocal-mult `* 0x12e0be826d694b2f >> 0x1d` → `/ 1000000000UL` 高難度還原 pattern；（4）script.json StringLiteral 查表 1-based, `jq -r '.ScriptString[N-1].Value'`，首次忘 -1 撞錯字串
+- 驗證：`dls.game/IGG.Game.Helper` 全 namespace marker grep 0（9 個 marker：`Il2CppDummyDll` / `[Token` / `[Address` / `[FieldOffset` / `Ghidra:` / `FUN_180` / `StringLiteral_` / `return default;` / `NotImplementedException` 全 0 命中）；既有 `dls.game/IGG.Game.Module.Login/LoginModule.cs` build blocker 不在本批範圍
+
 ### 更新 — Doomsday Phase2 S6 dls.ui.base Binder seed
 
 - 更新：`Input/Doomsday/RestoredSolution/Final/dls.ui.base/` — 新增 159 個 `*Binder.cs`，由 Annotated pseudocode + `script.json` 還原 9,024 筆 FairyGUI `UIObjectFactory.SetPackageItemExtension(url, typeof(Base...))`
-- 更新：`Doomsday_Phase2_Progress.md` / `Doomsday_Phase2_Completion_Plan.md` / `Token_Cost_Ledger.md` — `dls.ui.base` 由 0/11128 推進到 159/11128 effective；全域 effective completed 1,570 → 1,729
+- 更新：`Input/Doomsday/RestoredSolution/Final/dls.ui.base/` — 追加 9 個小 namespace 的 14 個 `Base*` component（`FogOfWar`、`MonsterSiege`、`PanelDebug`、`Reward`、`ScoreSeminder`、`BuildQueue`、`CommonLoading`、`GameDebug`、`Trade`），依 `ConstructFromXML` pseudocode 還原 child/controller/transition binding
+- 更新：`Doomsday_Phase2_Progress.md` / `Doomsday_Phase2_Completion_Plan.md` / `Token_Cost_Ledger.md` — `dls.ui.base` 由 0/11128 推進到 173/11128 effective；全域 effective completed 1,570 → 1,743
 - 驗證：本批 binder marker grep 0；因 S6 component classes 尚未落地，全專案 build 會被 binder 依賴的未解析 `Base*` 型別擋住，需後續 UI component 批次補齊
 
 ### 更新 — Doomsday Phase2 S2-D 完成 Assembly-CSharp 536/536 磁碟覆蓋（strip-stub only）

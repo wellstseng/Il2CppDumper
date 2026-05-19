@@ -1,7 +1,7 @@
 # Il2CppDumper — AI 分析文件索引
 
 > 本資料夾包含由 AI 輔助產出的專案分析文件。
-> 最近更新：2026-05-19（新增 token 成本追蹤與 token-safe 翻譯 SOP）
+> 最近更新：2026-05-19（新增 token 成本追蹤、token-safe 翻譯 SOP 與 subagent brief）
 
 ---
 
@@ -21,6 +21,7 @@
 | 10 | [Doomsday_Phase2_Completion_Plan.md](Doomsday_Phase2_Completion_Plan.md) | Phase2 剩餘 35K 檔的 section / batch 拆分、認領協議、平行啟動順序 | 「怎麼把剩下的派給其他 model？」 |
 | 11 | [Token_Cost_Ledger.md](Token_Cost_Ledger.md) | Codex / CLI session token 成本來源、巨量工具輸出事件、成本記錄模板與查詢指令 | 「之前 token 花在哪？」「怎麼建表控成本？」 |
 | 12 | [Translation_SOP_TokenSafe.md](Translation_SOP_TokenSafe.md) | Doomsday Phase2 Annotated→Final 的 token-safe 批次流程、工具輸出限制、驗收模板 | 「怎麼翻比較省 token？」「怎麼避免整批返工？」 |
+| 13 | [Doomsday_Subagent_Brief.md](Doomsday_Subagent_Brief.md) | Phase2 subagent 派工共用 SOP brief（砍/翻/保留對照、StringLiteral 查表、Token 控制、回報模板） | 派 subagent 時 prompt 引用本檔，避免每次重抄 SOP §2-§4 |
 
 文件間用 `[[name]]` 風格的相對連結互連，從任何一篇都能跳到相關章節。
 

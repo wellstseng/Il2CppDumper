@@ -2,7 +2,7 @@
 
 > 目的：把剩餘 `Annotated -> Final` 翻譯工作拆成可分派給多個 model / agent 的 section。
 > 入口：執行前先讀 `Doomsday_Phase2_Progress.md` §4 與 `Translation_SOP_TokenSafe.md`。
-> 最近更新：2026-05-19 19:50
+> 最近更新：2026-05-19 22:05
 
 ---
 
@@ -13,10 +13,10 @@
 | 口徑 | 數量 | 說明 |
 |---|---:|---|
 | Annotated total | 35,802 | `Input/Doomsday/RestoredSolution/Annotated/**/*.cs` |
-| Final exists | 9,218 | 有鏡像 Final 檔；其中大量為 placeholder，不代表品質合格 |
-| Disk missing | 26,584 | Annotated 有、Final 沒有 |
-| Effective completed | 1,729 | 進度表品質口徑；不含 template/stub/strip placeholder |
-| Effective remaining | 34,073 | 需要翻譯或重檢後才能算完成 |
+| Final exists | 9,232 | 有鏡像 Final 檔；其中大量為 placeholder，不代表品質合格 |
+| Disk missing | 26,570 | Annotated 有、Final 沒有 |
+| Effective completed | 1,743 | 進度表品質口徑；不含 template/stub/strip placeholder |
+| Effective remaining | 34,059 | 需要翻譯或重檢後才能算完成 |
 
 `dls.im` 特例已收斂：目前磁碟 380/380、全 dll marker grep 0，且 2026-05-19 13:55 build 摘要沒有 `dls.im` 語法錯。後續若要更高標準，可再做語意抽查，但不再列為 S1 阻塞。
 
@@ -61,7 +61,7 @@ Notes: <only concrete blockers>
 | S3 | Generated/config-like | 10,813 | 大量 enum / DTO / protobuf 類型，可用小批次穩定推進 | 8-12 |
 | S4 | External SDK wrappers | 3,461 effective | `Epic` / `USDK.Windows` disk-covered placeholder exists, but only `Epic.OnlineServices.Sanctions` has been redone | 4-8 |
 | S5 | `dls.game` gameplay | 7,747 | 業務邏輯多，需按 namespace 分派 | 8-12 |
-| S6 | `dls.ui.base` UI | 10,969 | 最大區塊，必須拆 UI namespace；159 個 `*Binder.cs` 已完成 | 12-20 |
+| S6 | `dls.ui.base` UI | 10,955 | 最大區塊，必須拆 UI namespace；159 個 `*Binder.cs` + 14 個小 component 已完成 | 12-20 |
 
 ---
 
@@ -161,7 +161,7 @@ High-priority candidate splits:
 | S5-A | `IGG.Game.Module.Activity.View` | 406 |
 | S5-B | `IGG.Game.Data.Cache.Mail.Type` | 341 |
 | S5-C | `IGG.Game.Notifys` | 155 |
-| S5-D | `IGG.Game.Helper` | 118 |
+| S5-D | `IGG.Game.Helper` | ✅ 118/118 disk-cover, 91 effective (含 6 sample) + 27 placeholder |
 | S5-E | `IGG.Game.Module.MultiplierGate` | 116 |
 | S5-F | `IGG.Game.Module.March.Actor` | 107 |
 | S5-G | `IGG.Game.Module.Common.View` | 104 |
@@ -180,6 +180,7 @@ Largest block: 11,128 files. Must be parallelized by UI namespace.
 
 Seed completed:
 - `s6-binder-seed`: 159 個 `*Binder.cs` effective，9,024 筆 FairyGUI `UIObjectFactory.SetPackageItemExtension` registration 已由 Annotated pseudocode + `script.json` 還原；component classes 尚未落地，後續需按 namespace 補齊 `Base*` UI class。
+- `s6-small-ui-components`: `IGG.Game.UI.FogOfWar`、`IGG.Game.UI.MonsterSiege`、`IGG.Game.UI.PanelDebug`、`IGG.Game.UI.Reward`、`IGG.Game.UI.ScoreSeminder`、`IGG.Game.UI.BuildQueue`、`IGG.Game.UI.CommonLoading`、`IGG.Game.UI.GameDebug`、`IGG.Game.UI.Trade` 小 namespace 完成；component class 已依 `ConstructFromXML` pseudocode 還原 child/controller/transition binding。
 
 Initial section map:
 
