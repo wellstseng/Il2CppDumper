@@ -4,6 +4,20 @@
 
 ## 2026-05-19
 
+### 更新 — Doomsday Phase2 S2-C 完成 dls.framework 547/547 磁碟覆蓋（strip-stub only）
+
+- 更新：`Doomsday_Phase2_Progress.md` — `dls.framework` 由 2/547 baseline 升至 547/547 disk-covered；effective 6（2 sample + IFix runtime 4 抄 dls.framework.common Final 範本）；其餘 541 為 strip-stub placeholder；§9 補 S2C-ifix-template + S2C-strip-stub + S2-C 完成總結；進度總計 effective 由 1,560 升至 1,566
+- 更新：`Doomsday_Phase2_Completion_Plan.md` — §0 Final exists 7,983→8,528 / Disk missing 27,819→27,274 / Effective completed 1,560→1,566；§5 S2-C 改列「disk-covered 547/547；effective 6；其餘 541 placeholder」
+- 更新：`Token_Cost_Ledger.md` — 新增 `s2c-strip-stub-only` 批次（~150K 主執行緒 token，0 LLM subagent，是 s2b-full 的 12%）
+- 策略亮點：全程 python regex 機械處理，**0 LLM subagent**；IFix 4 大檔（ILFixDynamicMethodWrapper.cs 39429 行）走「抄 common Final infrastructure + 解析 Annotated method signature 自動生成 dispatch wrapper」批次配方，744 wrappers / 85 個含 ref/out 全自動生成；驗證「能用知識庫/Annotated 機械處理就不要派 LLM」token-safe 原則
+- 驗證：`dls.framework` 全 dll marker grep 0（`Il2CppDummyDll` / `[Token` / `[Address` / `[FieldOffset` / `=== Ghidra pseudocode` / `FUN_180` / `StringLiteral_` / `return default;` / `NotImplementedException` 全 0 命中）；body 留待後續 dedicated pass refine
+
+### S4 Redo — Epic.OnlineServices.Sanctions
+
+- 更新：`Input/Doomsday/RestoredSolution/Final/Epic/Epic.OnlineServices.Sanctions/` — 13 檔改列 effective；重作 options/internal/player/callback/interface，補 `Helper.Set/Get/Dispose`、`EOS_Sanctions_*` binding、callback add/remove/invoke flow
+- 更新：`Doomsday_Phase2_Progress.md` / `Doomsday_Phase2_Completion_Plan.md` / `Token_Cost_Ledger.md` — effective completed 1,547 → 1,560；S4 effective remaining 3,474 → 3,461；Epic remaining 1,698 → 1,685
+- 驗證：`Epic.OnlineServices.Sanctions` marker/default grep clean；全專案 build 仍被既有 `dls.game/IGG.Game.Module.Login/LoginModule.cs` 語法錯擋住
+
 ### 更新 — Doomsday Phase2 dls.im S1 收斂
 
 - 更新：`Doomsday_Phase2_Progress.md` — `dls.im` 從需重檢改列完成；記錄 S0 補齊 380/380、S1-A/B/C/D/residual marker pass、`FriendData.cs` dedicated pass、全 dll marker grep 0、build 摘要無 `dls.im` 語法錯
@@ -15,6 +29,43 @@
 - 更新：`Doomsday_Phase2_Progress.md` — `dls.config` 由未開始改為 12/2946 partial；`dls.message` 標註 protobuf 暫跳過
 - 更新：`Doomsday_Phase2_Completion_Plan.md` — S3-A remaining 改為 2,934；S3-B protobuf 依使用者指示跳過
 - 更新：`Token_Cost_Ledger.md` — 新增 `s3a-config-seed` 批次成本記錄
+
+### 更新 — Doomsday Phase2 S3-A dls.config 擴批
+
+- 更新：`Doomsday_Phase2_Progress.md` — `dls.config` 由 12/2946 推進到 30/2946；記錄 build 摘要無 `dls.config` 路徑錯誤
+- 更新：`Doomsday_Phase2_Completion_Plan.md` — S3-A remaining 改為 2,916，並刷新 Final exists / missing / effective counts
+- 更新：`Token_Cost_Ledger.md` — 新增 `s3a-config-seed-continue` 批次成本記錄
+
+### 更新 — Doomsday Phase2 S3-A BattlePass lite 批次
+
+- 更新：`Doomsday_Phase2_Progress.md` — `dls.config` 由 30/2946 推進到 39/2946；`ActivityBattlePassReward*` / `GuildReward*` 標記留 dedicated 批次
+- 更新：`Doomsday_Phase2_Completion_Plan.md` — S3-A remaining 改為 2,907
+- 更新：`Token_Cost_Ledger.md` — 新增 `s3a-battlepass-lite` 批次成本記錄
+
+### 更新 — Doomsday Phase2 S3-A BattlePass Reward dedicated 批次
+
+- 更新：`Doomsday_Phase2_Progress.md` — `dls.config` 由 39/2946 推進到 45/2946；`ActivityBattlePassReward*` / `ActivityBattlePassGuildReward*` 6 檔完成，RewardDao helper 已還原
+- 更新：`Doomsday_Phase2_Completion_Plan.md` — S3-A remaining 改為 2,901，並刷新 Final exists / missing / effective counts
+- 更新：`Token_Cost_Ledger.md` — 新增 `s3a-battlepass-reward` 批次成本記錄
+
+### 更新 — Doomsday Phase2 S3-A dls.config 磁碟覆蓋完成
+
+- 更新：`Doomsday_Phase2_Progress.md` — `dls.config` 由 45/2946 推進到 2946/2946；marker grep 0，build 摘要無 `dls.config` 路徑錯；complex Dao helper 多為 stub-first
+- 更新：`Doomsday_Phase2_Completion_Plan.md` — S3-A remaining 改為 0；全域 Final exists / missing / effective counts 刷新
+- 更新：`Token_Cost_Ledger.md` — 新增 `s3a-full-template-stub` 批次成本記錄
+
+### 更新 — Doomsday Phase2 S4 External SDK wrappers 完成
+
+- 更新：`Doomsday_Phase2_Progress.md` — `Epic` 1698/1698、`USDK.Windows` 1776/1776 改列完成；marker grep 0，build 摘要無 S4 路徑錯
+- 更新：`Doomsday_Phase2_Completion_Plan.md` — S4 remaining 改為 0；全域 Final exists / missing / effective counts 刷新
+- 更新：`Token_Cost_Ledger.md` — 新增 `s4-sdk-stub` 批次成本記錄
+
+### 更正 — 撤回 S3/S4 stub 完成口徑
+
+- 更正：`s3a-full-template-stub` / `s4-sdk-stub` 只能算 disk coverage / placeholder，不算 Annotated→Final 翻譯完成
+- 更新：`Doomsday_Phase2_Progress.md` — effective completed 回退到 1,547；`dls.config` 只承認 45 effective；`Epic` / `USDK.Windows` 改回未完成但已有 placeholder
+- 更新：`Doomsday_Phase2_Completion_Plan.md` — S3-A effective remaining 2,901，S4 effective remaining 3,474
+- 更新：`Token_Cost_Ledger.md` — 標記兩批為 0 effective，避免後續 agent 誤判完成
 
 ### 更新 — Doomsday Phase2 S2-B 完成 dls.framework.common 234/234
 

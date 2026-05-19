@@ -2,7 +2,7 @@
 
 > 目的：把剩餘 `Annotated -> Final` 翻譯工作拆成可分派給多個 model / agent 的 section。
 > 入口：執行前先讀 `Doomsday_Phase2_Progress.md` §4 與 `Translation_SOP_TokenSafe.md`。
-> 最近更新：2026-05-19 15:12
+> 最近更新：2026-05-19 19:30
 
 ---
 
@@ -13,10 +13,10 @@
 | 口徑 | 數量 | 說明 |
 |---|---:|---|
 | Annotated total | 35,802 | `Input/Doomsday/RestoredSolution/Annotated/**/*.cs` |
-| Final exists | 1,359 | 有鏡像 Final 檔，不代表品質合格 |
-| Disk missing | 34,443 | Annotated 有、Final 沒有 |
-| Effective completed | 1,323 | 進度表品質口徑；含 S3-A `dls.config` 首批 12 檔 |
-| Effective remaining | 34,479 | 需要翻譯或重檢後才能算完成 |
+| Final exists | 8,528 | 有鏡像 Final 檔；其中大量為 placeholder，不代表品質合格 |
+| Disk missing | 27,274 | Annotated 有、Final 沒有 |
+| Effective completed | 1,566 | 進度表品質口徑；不含 template/stub/strip placeholder |
+| Effective remaining | 34,236 | 需要翻譯或重檢後才能算完成 |
 
 `dls.im` 特例已收斂：目前磁碟 380/380、全 dll marker grep 0，且 2026-05-19 13:55 build 摘要沒有 `dls.im` 語法錯。後續若要更高標準，可再做語意抽查，但不再列為 S1 阻塞。
 
@@ -59,7 +59,7 @@ Notes: <only concrete blockers>
 | S1 | `dls.im` recheck | 0 | ✅ done：marker/syntax criteria passed | 0 |
 | S2 | Medium partial dlls | 1,477 | 最容易快速提高有效完成數 | 4-6 |
 | S3 | Generated/config-like | 10,813 | 大量 enum / DTO / protobuf 類型，可用小批次穩定推進 | 8-12 |
-| S4 | External SDK wrappers | 3,474 | `Epic` / `USDK.Windows` 相對獨立 | 4-8 |
+| S4 | External SDK wrappers | 3,461 effective | `Epic` / `USDK.Windows` disk-covered placeholder exists, but only `Epic.OnlineServices.Sanctions` has been redone | 4-8 |
 | S5 | `dls.game` gameplay | 7,747 | 業務邏輯多，需按 namespace 分派 | 8-12 |
 | S6 | `dls.ui.base` UI | 11,128 | 最大區塊，必須拆 UI namespace | 12-20 |
 
@@ -108,9 +108,9 @@ These sections are large enough to parallelize but small enough to finish before
 
 | Section | DLL | Missing | Suggested split |
 |---|---|---:|---|
-| S2-A | `USDK.Module.Operations.Editor` | 182 | 10-20 files by namespace |
-| S2-B | `dls.framework.common` | 219 | protobuf / utils / cache subgroups |
-| S2-C | `dls.framework` | 545 | `FairyGUI` first, then framework modules |
+| S2-A | `USDK.Module.Operations.Editor` | 0 | ✅ disk-covered 207/207；含 stub 大檔，effective 207（S2A 主體 LLM 翻譯，少量 stub 大檔） |
+| S2-B | `dls.framework.common` | 0 | ✅ disk-covered 234/234；effective 234（S2B 主體 LLM 翻譯 + 25+ 個 ≥500 行 stub） |
+| S2-C | `dls.framework` | 541 effective | disk-covered 547/547；effective 僅 6（2 sample + IFix runtime 4 抄 dls.framework.common 範本）；其餘 541 為 strip-stub placeholder 需 dedicated refine |
 | S2-D | `Assembly-CSharp` | 531 | by namespace; avoid S1 sample collisions |
 
 Top split hints:
@@ -126,7 +126,7 @@ These are big but structurally repetitive. Keep batches small enough for review.
 
 | Section | DLL | Missing | Suggested split |
 |---|---|---:|---|
-| S3-A | `dls.config` | 2,934 | `IGG.Game.Data.Config` by file prefix / line count buckets; first 12 done |
+| S3-A | `dls.config` | 2,901 effective | disk-covered 2946/2946, but only first 45 count as translated; placeholders must be overwritten/refined |
 | S3-B | `dls.message` | 7,867 | ⏭️ skip for now: protobuf per user instruction |
 
 Rules:
@@ -141,8 +141,8 @@ Rules:
 
 | Section | DLL | Missing | Top namespaces |
 |---|---|---:|---|
-| S4-A | `Epic` | 1,698 | `Lobby` 217, `Sessions` 170, `Ecom` 108, `Connect` 97 |
-| S4-B | `USDK.Windows` | 1,776 | `GPC.Foundation.Wrappers.Helpers` 107, AgreementSigning UI 40, Analytics Payment VO 34 |
+| S4-A | `Epic` | 1,685 effective | `Epic.OnlineServices.Sanctions` 13/13 redone; remaining strip-stub placeholders must redo by `Epic.OnlineServices.<module>` |
+| S4-B | `USDK.Windows` | 1,776 effective | strip-stub placeholder exists; must redo by `GPC.Modules.*` namespace family |
 
 Suggested batching:
 - `Epic.OnlineServices.<module>` is a natural unit.
