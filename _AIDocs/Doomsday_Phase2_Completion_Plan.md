@@ -2,7 +2,7 @@
 
 > 目的：把剩餘 `Annotated -> Final` 翻譯工作拆成可分派給多個 model / agent 的 section。
 > 入口：執行前先讀 `Doomsday_Phase2_Progress.md` §4 與 `Translation_SOP_TokenSafe.md`。
-> 最近更新：2026-05-19 13:55
+> 最近更新：2026-05-19 15:12
 
 ---
 
@@ -13,10 +13,10 @@
 | 口徑 | 數量 | 說明 |
 |---|---:|---|
 | Annotated total | 35,802 | `Input/Doomsday/RestoredSolution/Annotated/**/*.cs` |
-| Final exists | 1,190 | 有鏡像 Final 檔，不代表品質合格 |
-| Disk missing | 34,612 | Annotated 有、Final 沒有 |
-| Effective completed | 1,154 | 進度表品質口徑；`dls.im` 380/380 已計入 |
-| Effective remaining | 34,648 | 需要翻譯或重檢後才能算完成 |
+| Final exists | 1,359 | 有鏡像 Final 檔，不代表品質合格 |
+| Disk missing | 34,443 | Annotated 有、Final 沒有 |
+| Effective completed | 1,323 | 進度表品質口徑；含 S3-A `dls.config` 首批 12 檔 |
+| Effective remaining | 34,479 | 需要翻譯或重檢後才能算完成 |
 
 `dls.im` 特例已收斂：目前磁碟 380/380、全 dll marker grep 0，且 2026-05-19 13:55 build 摘要沒有 `dls.im` 語法錯。後續若要更高標準，可再做語意抽查，但不再列為 S1 阻塞。
 
@@ -126,11 +126,12 @@ These are big but structurally repetitive. Keep batches small enough for review.
 
 | Section | DLL | Missing | Suggested split |
 |---|---|---:|---|
-| S3-A | `dls.config` | 2,946 | `IGG.Game.Data.Config` by file prefix / line count buckets |
-| S3-B | `dls.message` | 7,867 | `Protomsg` in 50-100 file chunks; `Chatprotos` separately |
+| S3-A | `dls.config` | 2,934 | `IGG.Game.Data.Config` by file prefix / line count buckets; first 12 done |
+| S3-B | `dls.message` | 7,867 | ⏭️ skip for now: protobuf per user instruction |
 
 Rules:
-- Generated protobuf / config classes still need Final quality, but do not hand-roll business logic.
+- Protobuf is skipped for now by user instruction; focus S3 on config/enum/Dao/CfgData files.
+- Generated config classes still need Final quality, but do not hand-roll business logic.
 - Prefer preserving declarative fields/properties and generated-message idioms.
 - Avoid whole-namespace reads; use file lists and 20-50 file batches for simple DTOs.
 

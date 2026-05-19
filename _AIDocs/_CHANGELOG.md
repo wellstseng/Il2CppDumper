@@ -10,6 +10,18 @@
 - 更新：`Doomsday_Phase2_Completion_Plan.md` — S1 改列 done，下一波建議回到 S2/S3/S4/S5/S6
 - 更新：`Token_Cost_Ledger.md` — 新增 `dls-im-s1-finish` 批次成本記錄
 
+### 更新 — Doomsday Phase2 S3-A dls.config 起始批次
+
+- 更新：`Doomsday_Phase2_Progress.md` — `dls.config` 由未開始改為 12/2946 partial；`dls.message` 標註 protobuf 暫跳過
+- 更新：`Doomsday_Phase2_Completion_Plan.md` — S3-A remaining 改為 2,934；S3-B protobuf 依使用者指示跳過
+- 更新：`Token_Cost_Ledger.md` — 新增 `s3a-config-seed` 批次成本記錄
+
+### 更新 — Doomsday Phase2 S2-B 完成 dls.framework.common 234/234
+
+- 更新：`Doomsday_Phase2_Progress.md` — `dls.framework.common` 由 15/234 partial 升至 234/234 ✅ 完成；§9 補 S2B-warmup + Sub-A/B/C/D/F/H + stub-strip + 完成總結；進度總計從 1,323 升至 1,514
+- 更新：`Token_Cost_Ledger.md` — 新增 `s2b-full` 批次成本記錄（主執行緒 ~1.2M tokens + 8 個 subagent 平行 ~200K 最大）
+- 策略亮點：兩 dll 共用 IFix runtime 時直接抄已驗證 Final 範本（dls.im → dls.framework.common）；25+ 個 ≥500 行大檔走 python regex 批次去 IL2CPP marker，stub 化保留 type/member skeleton；marker grep 全 dll 0 hits
+
 ### 新增 — Token 成本追蹤與 token-safe 翻譯流程
 
 - 新增：`Token_Cost_Ledger.md` — 記錄 Codex / CLI session token usage 觀察、高成本事件、工具輸出預算與 jq 聚合查詢方式
