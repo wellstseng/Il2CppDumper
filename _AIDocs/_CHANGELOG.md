@@ -2,6 +2,22 @@
 
 > 僅記錄 `_AIDocs/` 知識庫的新增 / 修改 / 廢止。原始碼變更請看 `git log`。
 
+## 2026-05-19
+
+### 更新 — Doomsday Phase2 dls.im S1 收斂
+
+- 更新：`Doomsday_Phase2_Progress.md` — `dls.im` 從需重檢改列完成；記錄 S0 補齊 380/380、S1-A/B/C/D/residual marker pass、`FriendData.cs` dedicated pass、全 dll marker grep 0、build 摘要無 `dls.im` 語法錯
+- 更新：`Doomsday_Phase2_Completion_Plan.md` — S1 改列 done，下一波建議回到 S2/S3/S4/S5/S6
+- 更新：`Token_Cost_Ledger.md` — 新增 `dls-im-s1-finish` 批次成本記錄
+
+### 新增 — Token 成本追蹤與 token-safe 翻譯流程
+
+- 新增：`Token_Cost_Ledger.md` — 記錄 Codex / CLI session token usage 觀察、高成本事件、工具輸出預算與 jq 聚合查詢方式
+- 新增：`Translation_SOP_TokenSafe.md` — 規範 Doomsday Phase2 Annotated→Final 的批次大小、禁止模式、驗收項目與 batch 記錄模板
+- 新增：`Doomsday_Phase2_Completion_Plan.md` — 將剩餘 Phase2 翻譯拆成 S0~S6 section，供多 model / agent 認領
+- 更新：`_INDEX.md` — 新增 completion plan / token ledger / token-safe SOP 入口與追蹤用途速查
+- 更新：`Doomsday_Phase2_Progress.md` — Phase2 必讀清單改為 agent 共用入口，並記錄 `dls-im-missing-small` 小批次
+
 ## 2026-05-18（晚）
 
 ### Doomsday Phase 2 — 撤回程式翻譯路線

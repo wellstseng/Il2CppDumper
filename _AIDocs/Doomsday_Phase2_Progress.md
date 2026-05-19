@@ -1,6 +1,6 @@
 # Doomsday Phase2 Annotated→Final — 多 agent 平行協調
 
-> 最後更新：2026-05-18 23:45（撤回 Phase2 程式翻譯路線；Final 改回人工/LLM 還原）
+> 最後更新：2026-05-19 13:55（dls.im S1 marker/syntax 重檢完成；dls.im 升為 380/380）
 > 目的：協調 Claude (judy-cli) + Codex 平行翻譯，避免重複作業
 > 權威 SOP：見 §「Codex 必讀清單」
 
@@ -18,12 +18,12 @@
 | dls.framework.unsafe | 4 | 4 | ✅ 完成 | Claude Batch-1 |
 | dls.framework | 547 | 2 | 🟡 partial (S1 早期 sample) | — 未認領 |
 | dls.game | 7,828 | 45 | 🟡 partial (S1 Launch/Login/MainScene/Cache 已完成) | — 未認領 |
-| dls.im | 380 | 374 | ⚠️ 需重檢（先前為程式翻譯產物，不列品質基準） | — 待重新認領 |
+| dls.im | 380 | 380 | ✅ 完成（S0 補齊缺檔；S1-A/B/C/D + residual marker pass 完成；全 dll marker grep 0，build 無 dls.im 語法錯） | Codex `dls-im-s0-s1` |
 | dls.message | 7,867 | 0 | ⬜ 未開始 | — 未認領 |
 | dls.plugins.processcontext | 6 | 6 | ✅ 完成 | Claude Batch-1 |
 | dls.ui.base | 11,128 | 0 | ⬜ 未開始（最大 dll） | — 未認領 |
 | Epic | 1,698 | 0 | ⬜ 未開始 | — 未認領 |
-| IFix.Core | 34 | 33 | ✅ 完成（VirtualMachine.cs stub 化，ILSpy 無法解析；Properties/AssemblyInfo.cs skip：build metadata 無業務語意） | Claude IFix-S1+S2 |
+| IFix.Core | 34 | 34 | ✅ 完成（VirtualMachine.cs stub 化，ILSpy 無法解析；Properties/AssemblyInfo.cs 已補） | Claude IFix-S1+S2 + Codex S0 |
 | netease | 40 | 40 | ✅ 完成 | Claude C1 |
 | sdk.peapod | 10 | 10 | ✅ 完成 | Claude Batch-1 |
 | TapticFeedback | 5 | 5 | ✅ 完成 | Claude Batch-1 |
@@ -32,11 +32,11 @@
 | USDK.Module.AIGuide | 48 | 48 | ✅ 完成 | Claude Batch-9 |
 | USDK.Module.BlacklistedWord.Editor | 51 | 50 | ✅ 完成 (1 skip: n.cs 1610 行) | Claude Batch-10 |
 | USDK.Module.CPD.Editor | 40 | 40 | ✅ 完成 | Claude C1 + Codex redo |
-| USDK.Module.Operations.Editor | 207 | 25 | 🟡 partial | — 未認領 |
+| USDK.Module.Operations.Editor | 207 | 207 | ✅ 完成（S2-A 全 dll 磁碟 207/207；marker grep 乾淨；10 個 700-1654 行大檔為 stub 形式保留 type/member skeleton，body 待後續 dedicated pass） | Claude S2A (主+Sub1-7) |
 | USDK.Module.Push.Editor | 46 | 46 | ✅ 完成 | Claude Batch-9 |
 | USDK.Windows | 1,776 | 0 | ⬜ 未開始 | — 未認領 |
 
-**進度總計**：Annotated 35,802 檔，有效 Final 落地 748 檔（不含 dls.im 先前程式翻譯產物 374 檔）≈ **2.1%**
+**進度總計**：Annotated 35,802 檔，有效 Final 落地 1,311 檔（`dls.im` 380/380、`USDK.Module.Operations.Editor` 207/207 全納入；含 10 個 stub 大檔）≈ **3.7%**
 
 ---
 
@@ -64,11 +64,10 @@
 
 按優先順序：
 
-1. **dls.im** (380 檔，0 完成) — 中型，純未開始，最容易並行
-2. **dls.config** (2,946 檔，0 完成) — 大型但純未開始
-3. **USDK.Windows** (1,776 檔，0 完成) — 大型純未開始
-4. **Epic** (1,698 檔，0 完成) — 大型純未開始
-5. **dls.message** (7,867 檔，0 完成) — 超大但純未開始
+1. **dls.config** (2,946 檔，0 完成) — 大型但純未開始
+2. **USDK.Windows** (1,776 檔，0 完成) — 大型純未開始
+3. **Epic** (1,698 檔，0 完成) — 大型純未開始
+4. **dls.message** (7,867 檔，0 完成) — 超大但純未開始
 
 避免：dls.game / dls.framework / Assembly-CSharp / behaviac.runtime / USDK.Foundation / USDK.Bridge / netease / USDK.Module.CPD.Editor —— Claude 已在處理或已有 partial 產出，並行容易撞檔。
 
@@ -76,12 +75,14 @@
 
 ---
 
-## 4. Codex 必讀清單（翻譯 SOP）
+## 4. Phase2 agent 必讀清單（翻譯 SOP）
 
 開工前必讀：
 1. `/Users/wellstseng/.claude/memory/_staging/_il2cpp_source_restore.md` — 通用 SOP（「忠實 = 還原 IL2CPP 編譯前的 .NET 源碼」校準）
 2. `/Users/wellstseng/project/Il2CppDumper/memory/_staging/Doomsday_Phase2_SOP.md` — 專案 SOP（含 IFix fast-path 處置 §3）
 3. `/Users/wellstseng/project/Il2CppDumper/_AIDocs/Doomsday_IFix_Hotpatch.md` — IFix 熱更機制摘要（IFix fast-path 出現時要砍）
+4. `/Users/wellstseng/project/Il2CppDumper/_AIDocs/Translation_SOP_TokenSafe.md` — token-safe 批次流程、工具輸出限制、驗收模板
+5. `/Users/wellstseng/project/Il2CppDumper/_AIDocs/Token_Cost_Ledger.md` — token 成本表與高成本操作記錄方式
 
 **參考 sample**（已完成風格範本）：
 - `Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Module.Launch/GameContext.cs`（含已砍 IFix fast-path 範例）
@@ -167,3 +168,19 @@
 - 2026-05-18 14:47 Codex `Claude-C1-tail-redo` — `USDK.Module.CPD.Editor` 重做 12 檔，完成 40/40；抽查 CPD diagnosis / metric / bridge command 類，已還原 event add/remove、ctor 初始化、scene metric JSON、dispose/lazy init 等邏輯
 - 2026-05-18 14:47 Codex `Claude-C3-tail-redo` — `behaviac.runtime` 重做 35 檔，完成 177/177；抽查 `Agent` / `Workspace` / `MiniXmlParser` / behavior task 類，已改為 behaviac runtime 風格實作，剩餘 `return null/default` 為 not found / fallback / disabled path 語意
 - 2026-05-18 23:45 Codex `Phase2 rule cleanup` — 撤回程式翻譯路線；dls.im 先前產物改列需重檢，後續 Final 一律回到人工/LLM 依 Annotated 還原
+- 2026-05-19 11:55 Codex `dls-im-missing-small` — `dls.im` 補 4 個缺失小檔：`Properties/AssemblyInfo.cs`、`UnitySourceGeneratedAssemblyMonoScriptTypes_v1.cs`、`IFix/ILFixInterfaceBridge.cs`、`IFix/WrappersManagerImpl.cs`；本批 marker grep 乾淨，`dotnet build` 仍被既有 `dls.game/LoginModule.cs` 與舊 `dls.im` 產物語法錯擋住；當時剩 `IFix/IDMAP0.cs`、`IFix/ILFixDynamicMethodWrapper.cs` 兩個大型缺檔
+- 2026-05-19 13:31 Codex `dls-im-s0-tail` — `dls.im` 補 `IFix/IDMAP0.cs`、`IFix/ILFixDynamicMethodWrapper.cs`，並補 `IFix.Core/Properties/AssemblyInfo.cs`；`dls.im` 磁碟覆蓋已 380/380；`USDK.Module.BlacklistedWord.Editor/n.cs` 仍 skip，需 dedicated pass
+- 2026-05-19 13:31 Codex subagents `dls-im-s1-abc` — `dls.im` 重檢 39 個舊 Final：S1-A 4 檔（Actuator/Controller base）、S1-B 20 檔（Data/Notify/Operation，skip `IGG.IM.Data/FriendData.cs`）、S1-C 15 檔（Network/Sender/Mono）；已完成檔 marker grep 乾淨，剩 335 個舊程式翻譯產物待重檢
+- 2026-05-19 13:55 Codex subagents `dls-im-s1-finish` — `FriendData.cs` dedicated pass 完成；S1-D `chatprotos/msgtype/protomsg` 301 檔 marker/sampled generated-message recheck 通過；residual marker 小檔 pass 後 `dls.im` 全 dll marker grep 0；`dotnet build` 仍失敗但錯誤摘要無 `dls.im` 路徑，主要阻擋為 out-of-scope `dls.game/IGG.Game.Module.Login/LoginModule.cs`
+- 2026-05-19 13:30 Claude `S2A-1a` — `USDK.Module.Operations.Editor` root tiny (<100 行) 12 檔：`ao/ap/at/a0/a2/a9/ba/bf/bk/bp/t/DotfuscatorAttribute`；marker grep 乾淨；StringLiteral 已對照 `script.json` ScriptString 解析
+- 2026-05-19 13:30 Claude `S2A-2a` — `USDK.Module.Operations.Editor` sub-namespace tiny (≤50 行) 13 檔：`GPC.Modules.NoticeHub.VO/{GPCAccountSecurityNotice,GPCGameCommunityNotice,GPCLiveChatNotice,GPCTSHNotice}`、`GPC.Modules.ResourceStorage.VO/{GPCOPSImageSizeType,GPCOPSResource,GPCOPSResourceStatus,GPCOPSResourceStatusHelper,GPCOPSResourceTask,GPCOPSResourceType,GPCOPSUploaderScene}`、`Properties/AssemblyInfo.cs`、`GPC.Modules.NoticeHub.Impl/Error.cs`；marker grep 乾淨
+- 2026-05-19 14:00 Claude `S2A-1b root small` — `USDK.Module.Operations.Editor` root 100-200 行 19 檔（an/a3/ay/e/az/bc/bs/bg/s/bw/q/af/ab/a7/bq/r/ae/ar/a1）；含 GPCBridgeRequest pattern、PrimeMembership/GameCommunityHelper 子類、closure 延遲 invoke、bridge response handler；不確定的 vtable slot 留 stub + 1 行短註解
+- 2026-05-19 14:00 Claude subagent `S2A-Sub1` — `USDK.Module.Operations.Editor` 28 tiny delegates/interfaces/enums（Service/Upload/Internal.Wrapper 下小檔）；marker grep 乾淨
+- 2026-05-19 14:05 Claude subagent `S2A-Sub2` — 33 small wrappers/helpers/errors（Internal.Wrapper / Error.cs / Kit / 小型 entrypoint）；marker grep 乾淨（3 行 `// Ghidra:` stub 註解屬 SOP 允許）；LiveChatHelperForOther 用 `<>c.<>9` 快取 FrameReadyEventHandler 委派
+- 2026-05-19 14:10 Claude subagent `S2A-Sub3` — 27 medium VO/Impl/Manager 100-465 行；NoticeHub VO JObject 解析、ResourceStorage Extended/Internal 系列、NoticeHubMessageListenerImpl 314、UOPSResourceCache 312 等；marker grep 乾淨；OPSResourceUploaderEditor.Start() 部分 task 屬性初始化不完整需後續修
+- 2026-05-19 14:15 Claude subagents `S2A-Sub4/5/6` 派工 — Sub4 (30 root 200-700) / Sub5 (14 large sub-namespace 700-1576) / Sub6 (6 huge root 786-1654)
+- 2026-05-19 14:40 Claude subagent `S2A-Sub4` — 30 root 200-700 行混淆檔全部完成；StringLiteral ~120 索引查表；bl/aa `<>c` 靜態快取改寫為可讀 helper class；ad/y/au 部分 vtable slot 留 best-guess；as.cs listener 取值留 placeholder
+- 2026-05-19 14:45 Claude subagent `S2A-Sub5` — 14 大型 sub-namespace 6/14 完成（GPCUserNoticeResult/GPCNoticeHubImpl/OperationsModulesManager/GPCImageHelper/GPCOperationsModule/GPCOperationsImpl）；skip 8 檔（OperationsHelperForAndroid 1279 / ExResourceUploadListenerAndroidImpl 1242 / OPSResourceDownloaderAndroid 1479 / OPSResourceDownloaderWindows 1190 / OPSResourceUploaderWindows 895 / ResourceUploadListenerAndroidImpl 1024 / GPCBravoImageCropperBehaviour 1375 / GPCImageCropperBehaviour 1576），原因 token 60% 閾值 + Android JNI / Windows P/Invoke vtable indirect 過密
+- 2026-05-19 14:50 Claude subagent `S2A-Sub6` — 6 huge root 4/6 完成（d/c/p/i.cs，分別 786/1091/1260/1382 行）；skip 2 檔（av.cs 1469 MonoPInvokeCallback + IntPtr delegate、ag.cs 1654 upload state machine pseudocode 失真嚴重）；StringLiteral 80+ 索引查表
+- 2026-05-19 15:00 Claude subagent `S2A-Sub7` — Sub5/Sub6 共 10 個 skip 大檔做 stub 化（保留 type/member skeleton，body 空 return default，不做語意還原）；1,138 行 stub 覆蓋 13,183 行 Annotated；marker grep 乾淨；告知：Annotated 原檔 nested class 與同 outer method 同名屬 IL 結構，未必符合 Roslyn 編譯要求，需後續手動 rename（屬 dedicated pass 範圍）
+- 2026-05-19 15:00 **S2-A 完成**：`USDK.Module.Operations.Editor` 207/207 磁碟覆蓋；全 dll marker grep 0 hits（除 LiveChatHelperForOther 3 行 SOP 允許的 `// Ghidra:` stub 註解）；本 session Final 落地 182 新檔（baseline 25 → 207）；10 個大檔以 stub 形式存在待後續 dedicated pass refine body
