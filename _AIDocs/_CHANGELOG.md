@@ -4,6 +4,20 @@
 
 ## 2026-05-19
 
+### 更新 — Doomsday Phase2 S6 dls.ui.base Binder seed
+
+- 更新：`Input/Doomsday/RestoredSolution/Final/dls.ui.base/` — 新增 159 個 `*Binder.cs`，由 Annotated pseudocode + `script.json` 還原 9,024 筆 FairyGUI `UIObjectFactory.SetPackageItemExtension(url, typeof(Base...))`
+- 更新：`Doomsday_Phase2_Progress.md` / `Doomsday_Phase2_Completion_Plan.md` / `Token_Cost_Ledger.md` — `dls.ui.base` 由 0/11128 推進到 159/11128 effective；全域 effective completed 1,570 → 1,729
+- 驗證：本批 binder marker grep 0；因 S6 component classes 尚未落地，全專案 build 會被 binder 依賴的未解析 `Base*` 型別擋住，需後續 UI component 批次補齊
+
+### 更新 — Doomsday Phase2 S2-D 完成 Assembly-CSharp 536/536 磁碟覆蓋（strip-stub only）
+
+- 更新：`Doomsday_Phase2_Progress.md` — `Assembly-CSharp` 由 5/536 baseline 升至 536/536 disk-covered；effective 9（5 sample + IFix runtime 4 抄 dls.framework.common Final 範本）；其餘 527 為 strip-stub placeholder；§9 補 S2D-ifix-template + strip-stub + 完成總結；本批 effective 增量 +4（IFix runtime 4）
+- 更新：`Doomsday_Phase2_Completion_Plan.md` — §0 Final exists / Disk missing / Effective completed 校正（與 Codex `s6-binder-seed` 並行）；§5 S2-D 改列「disk-covered 536/536；effective 9；其餘 527 placeholder」
+- 更新：`Token_Cost_Ledger.md` — 新增 `s2d-strip-stub-only` 批次（~50K 主執行緒 token，是 s2c 的 1/3，0 LLM subagent）
+- 策略亮點：完全套用 S2-C 配方（IFix 4 大檔抄 dls.framework.common Final 範本 + 其餘 528 strip-stub script 機械處理）；性質判定：Assembly-CSharp 為 Unity binding shim + IGG.Game.Module.*.Comps marker + editor tool（UILanguageHelper）為主，業務邏輯密度低，strip-stub 已滿足 disk-coverage + marker clean
+- 驗證：`Assembly-CSharp` 全 dll marker grep 0；body 留待後續 dedicated pass refine（重點：UILanguageHelper 編輯工具大檔 + root MonoBehaviour）
+
 ### 更新 — Doomsday Phase2 S2-C 完成 dls.framework 547/547 磁碟覆蓋（strip-stub only）
 
 - 更新：`Doomsday_Phase2_Progress.md` — `dls.framework` 由 2/547 baseline 升至 547/547 disk-covered；effective 6（2 sample + IFix runtime 4 抄 dls.framework.common Final 範本）；其餘 541 為 strip-stub placeholder；§9 補 S2C-ifix-template + S2C-strip-stub + S2-C 完成總結；進度總計 effective 由 1,560 升至 1,566

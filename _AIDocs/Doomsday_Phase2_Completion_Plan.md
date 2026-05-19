@@ -2,7 +2,7 @@
 
 > 目的：把剩餘 `Annotated -> Final` 翻譯工作拆成可分派給多個 model / agent 的 section。
 > 入口：執行前先讀 `Doomsday_Phase2_Progress.md` §4 與 `Translation_SOP_TokenSafe.md`。
-> 最近更新：2026-05-19 19:30
+> 最近更新：2026-05-19 19:50
 
 ---
 
@@ -13,10 +13,10 @@
 | 口徑 | 數量 | 說明 |
 |---|---:|---|
 | Annotated total | 35,802 | `Input/Doomsday/RestoredSolution/Annotated/**/*.cs` |
-| Final exists | 8,528 | 有鏡像 Final 檔；其中大量為 placeholder，不代表品質合格 |
-| Disk missing | 27,274 | Annotated 有、Final 沒有 |
-| Effective completed | 1,566 | 進度表品質口徑；不含 template/stub/strip placeholder |
-| Effective remaining | 34,236 | 需要翻譯或重檢後才能算完成 |
+| Final exists | 9,218 | 有鏡像 Final 檔；其中大量為 placeholder，不代表品質合格 |
+| Disk missing | 26,584 | Annotated 有、Final 沒有 |
+| Effective completed | 1,729 | 進度表品質口徑；不含 template/stub/strip placeholder |
+| Effective remaining | 34,073 | 需要翻譯或重檢後才能算完成 |
 
 `dls.im` 特例已收斂：目前磁碟 380/380、全 dll marker grep 0，且 2026-05-19 13:55 build 摘要沒有 `dls.im` 語法錯。後續若要更高標準，可再做語意抽查，但不再列為 S1 阻塞。
 
@@ -61,7 +61,7 @@ Notes: <only concrete blockers>
 | S3 | Generated/config-like | 10,813 | 大量 enum / DTO / protobuf 類型，可用小批次穩定推進 | 8-12 |
 | S4 | External SDK wrappers | 3,461 effective | `Epic` / `USDK.Windows` disk-covered placeholder exists, but only `Epic.OnlineServices.Sanctions` has been redone | 4-8 |
 | S5 | `dls.game` gameplay | 7,747 | 業務邏輯多，需按 namespace 分派 | 8-12 |
-| S6 | `dls.ui.base` UI | 11,128 | 最大區塊，必須拆 UI namespace | 12-20 |
+| S6 | `dls.ui.base` UI | 10,969 | 最大區塊，必須拆 UI namespace；159 個 `*Binder.cs` 已完成 | 12-20 |
 
 ---
 
@@ -111,7 +111,7 @@ These sections are large enough to parallelize but small enough to finish before
 | S2-A | `USDK.Module.Operations.Editor` | 0 | ✅ disk-covered 207/207；含 stub 大檔，effective 207（S2A 主體 LLM 翻譯，少量 stub 大檔） |
 | S2-B | `dls.framework.common` | 0 | ✅ disk-covered 234/234；effective 234（S2B 主體 LLM 翻譯 + 25+ 個 ≥500 行 stub） |
 | S2-C | `dls.framework` | 541 effective | disk-covered 547/547；effective 僅 6（2 sample + IFix runtime 4 抄 dls.framework.common 範本）；其餘 541 為 strip-stub placeholder 需 dedicated refine |
-| S2-D | `Assembly-CSharp` | 531 | by namespace; avoid S1 sample collisions |
+| S2-D | `Assembly-CSharp` | 527 effective | disk-covered 536/536；effective 9（5 sample + IFix runtime 4 抄 dls.framework.common 範本）；其餘 527 為 strip-stub placeholder 需 dedicated refine |
 
 Top split hints:
 - `dls.framework`: `FairyGUI` 209, `IGG.Framework.Config` 34, `IGG.Framework` 34, `IGG.Framework.Utils` 28.
@@ -177,6 +177,9 @@ Avoid:
 ## 9. Section S6 — dls.ui.base UI
 
 Largest block: 11,128 files. Must be parallelized by UI namespace.
+
+Seed completed:
+- `s6-binder-seed`: 159 個 `*Binder.cs` effective，9,024 筆 FairyGUI `UIObjectFactory.SetPackageItemExtension` registration 已由 Annotated pseudocode + `script.json` 還原；component classes 尚未落地，後續需按 namespace 補齊 `Base*` UI class。
 
 Initial section map:
 

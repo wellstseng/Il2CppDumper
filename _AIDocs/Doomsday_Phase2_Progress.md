@@ -1,6 +1,6 @@
 # Doomsday Phase2 Annotated→Final — 多 agent 平行協調
 
-> 最後更新：2026-05-19 19:30（S2-C disk 覆蓋：`dls.framework` 547/547 via strip-stub + IFix runtime 4 抄 dls.framework.common 範本；effective +6 至 1,566；其餘 541 為 placeholder）
+> 最後更新：2026-05-19 19:50（S2-D disk 覆蓋：`Assembly-CSharp` 536/536 via strip-stub + IFix runtime 4 抄範本；effective +4 至 1,570；其餘 527 為 placeholder）
 > 目的：協調 Claude (judy-cli) + Codex 平行翻譯，避免重複作業
 > 權威 SOP：見 §「Codex 必讀清單」
 
@@ -11,7 +11,7 @@
 | dll | Annotated | Final | 狀態 | 處理者 |
 |---|---:|---:|---|---|
 | Assembly-CSharp-firstpass | 9 | 9 | ✅ 完成 | Claude Batch-1 |
-| Assembly-CSharp | 536 | 5 | 🟡 partial (S1 早期 sample) | — 未認領 |
+| Assembly-CSharp | 536 | 536 disk / 9 effective | 🟡 partial（5 sample + IFix runtime 4 抄 dls.framework.common 已驗證範本；其餘 527 為 strip-stub placeholder 不算翻譯，body 待 dedicated pass refine） | Claude S2D strip-stub |
 | behaviac.runtime | 177 | 177 | ✅ 完成 | Claude C3a/b + Codex redo |
 | dls.config | 2,946 | 2,946 disk / 45 effective | 🟡 partial（45 檔有人工/LLM 還原；其餘 template/stub/strip 產物只能當 placeholder，不算翻譯完成） | Codex `s3a-manual` + placeholder batch |
 | dls.framework.common | 234 | 234 | ✅ 完成（S2-B 全 dll 磁碟 234/234；marker grep 0；含 IFix wrapper 5546→380 stub、Protobuf runtime stub、Reflection descriptor stub；大檔 body 待後續 dedicated pass refine） | Claude S2B (主+Sub-A/B/C/D/E/F/G/H + stub-strip) |
@@ -21,7 +21,7 @@
 | dls.im | 380 | 380 | ✅ 完成（S0 補齊缺檔；S1-A/B/C/D + residual marker pass 完成；全 dll marker grep 0，build 無 dls.im 語法錯） | Codex `dls-im-s0-s1` |
 | dls.message | 7,867 | 0 | ⏭️ 暫跳過（protobuf，依使用者指示先不處理） | — |
 | dls.plugins.processcontext | 6 | 6 | ✅ 完成 | Claude Batch-1 |
-| dls.ui.base | 11,128 | 0 | ⬜ 未開始（最大 dll） | — 未認領 |
+| dls.ui.base | 11,128 | 159 | 🟡 partial（S6 binder seed：159 個 `*Binder.cs` 已依 FairyGUI registration pseudocode 還原，9,024 筆 `SetPackageItemExtension`；其餘 UI component 未開始） | Codex `s6-binder-seed` |
 | Epic | 1,698 | 1,698 disk / 13 effective | 🟡 partial（`Epic.OnlineServices.Sanctions` 13 檔已重作；其餘 strip-stub placeholder 不算翻譯） | Codex S4 redo |
 | IFix.Core | 34 | 34 | ✅ 完成（VirtualMachine.cs stub 化，ILSpy 無法解析；Properties/AssemblyInfo.cs 已補） | Claude IFix-S1+S2 + Codex S0 |
 | netease | 40 | 40 | ✅ 完成 | Claude C1 |
@@ -36,7 +36,7 @@
 | USDK.Module.Push.Editor | 46 | 46 | ✅ 完成 | Claude Batch-9 |
 | USDK.Windows | 1,776 | 1,776 disk / 0 effective | ⬜ 未完成（目前只有 strip-stub placeholder；沒有 pseudocode 語意還原，不算翻譯） | placeholder only |
 
-**進度總計**：Annotated 35,802 檔，有效 Final 落地 1,566 檔（`dls.im` 380/380、`USDK.Module.Operations.Editor` 207/207、`dls.framework.common` 234/234、S3-A `dls.config` 45 檔、S4 `Epic.OnlineServices.Sanctions` 13 檔、S2-C `dls.framework` IFix runtime 4 抄範本 + 2 sample；不把 stub/strip/template placeholder 算入有效完成）≈ **4.4%**
+**進度總計**：Annotated 35,802 檔，有效 Final 落地 1,729 檔（`dls.im` 380/380、`USDK.Module.Operations.Editor` 207/207、`dls.framework.common` 234/234、S3-A `dls.config` 45 檔、S4 `Epic.OnlineServices.Sanctions` 13 檔、S2-C `dls.framework` IFix runtime 4 抄範本 + 2 sample、S2-D `Assembly-CSharp` IFix runtime 4 抄範本、S6 `dls.ui.base` binder seed 159 檔；不把 stub/strip/template placeholder 算入有效完成）≈ **4.8%**
 
 ---
 
@@ -206,3 +206,6 @@
 - 2026-05-19 19:30 Claude `S2C-ifix-template` — `dls.framework/IFix/` 4 大檔抄 `dls.framework.common` 已驗證 Final 範本：WrappersManagerImpl.cs 246→52（結構與 common 完全相同，直接抄）、ILFixInterfaceBridge.cs 469→23（採 common 最小骨架 + 補 RefAwaitUnsafeOnCompleteMethod；原 explicit-interface impl 與重複 MoveNext 因 Roslyn 簽名衝突砍掉，IFix.Core 反射查找受影響部分留 dedicated pass）、IDMAP0.cs 7378→3998（純 enum，python regex 砍 attribute + `using Il2CppDummyDll;`，3994 entries 保留 IFix patch id 對應）、ILFixDynamicMethodWrapper.cs 39429→1023（套 common Final 行 1-196 infrastructure；744 個 `__Gen_Wrap_0..743` 中 659 個 expression body 用 `DispatchVoid` / `DispatchReturn<T>`、85 個 ref/out wrapper 用 `DispatchRefVoid` / `DispatchRefReturn<TRef, TResult>` block body）；4 個視為 effective（已驗證範本同等效力）
 - 2026-05-19 19:30 Claude `S2C-strip-stub` — `dls.framework` 其餘 541 missing 全 python regex strip-stub 覆蓋：通用流程砍 `[Token(...)]`/`[Address(...)]`/`[FieldOffset(...)]`（含 `Il2CppDummyDll.` qualified prefix）/`using Il2CppDummyDll;`/Ghidra pseudocode block + 補正確 `..` 層數的 `// Annotated:` header；本批 0 LLM subagent；type/member skeleton 完整保留（enum 完整、interface 完整、class field/property/method signature 完整；method body 留 ILSpy 反編譯失敗 stub：`return default(T);` / `return null;` / 空）；marker grep 0；本批不算 effective，body 留待 dedicated pass refine
 - 2026-05-19 19:30 **S2-C 磁碟覆蓋完成**：`dls.framework` 547/547；全 dll marker grep 0（含 `Il2CppDummyDll` / `[Token` / `[Address` / `[FieldOffset` / `=== Ghidra pseudocode` / `FUN_180` / `StringLiteral_` / `return default;` / `NotImplementedException` 全 0 命中）；本 session 落地 545 新檔（baseline 2 sample → 547）；effective 6（2 sample + IFix runtime 4），其餘 541 strip-stub placeholder；策略亮點：全程 python regex 機械處理，0 LLM subagent；總 token cost &lt;&lt; S2-A/S2-B 數十倍；IFix 大檔（ILFixDynamicMethodWrapper.cs 39429 行）走「抄 common Final infrastructure + 解析 Annotated method signature 自動生成 dispatch wrapper」批次配方，744 wrappers / 85 個含 ref/out 全自動生成
+- 2026-05-19 19:50 Claude `S2D-ifix-template + strip-stub` — `Assembly-CSharp` 全程主執行緒 python regex 同 S2-C 配方：IFix 4 大檔抄 `dls.framework.common` Final 範本（WrappersManagerImpl 240 行直接抄；ILFixInterfaceBridge 59 行採 common 最小骨架 + 補 RefAwait*；IDMAP0 154 行走 strip-stub；ILFixDynamicMethodWrapper 1705 行自動生成 30 wrapper 含 ref/out DispatchRef*）；其餘 528 missing 全 strip-stub script 機械處理；本批 0 LLM subagent
+- 2026-05-19 19:50 **S2-D 磁碟覆蓋完成**：`Assembly-CSharp` 536/536；全 dll marker grep 0；本 session 落地 531 新檔（baseline 5 sample → 536）；effective 9（5 sample + IFix runtime 4），其餘 527 strip-stub placeholder；性質判定：Assembly-CSharp 多為 Unity binding shim（IGG.Binding 31 partial proxy）、Comps marker（IGG.Game.Module.*.Comps）、editor tool（IGG.GameTools.UILanguageHelper.*），業務邏輯密度低，strip-stub 完整保留 type/member skeleton 已能滿足 disk-coverage + marker clean 目標
+- 2026-05-19 19:11 Codex `s6-binder-seed` — `dls.ui.base` 159 個 `*Binder.cs` 完成：由 Annotated pseudocode 的 `System_Type__GetTypeFromHandle(..._var)` + `StringLiteral_N` 查 `script.json` 還原 FairyGUI `UIObjectFactory.SetPackageItemExtension(url, typeof(Base...))`，共 9,024 筆 registration；8 個空 binder 保留空 `BindAll()`；本批 marker grep 0；因 `dls.ui.base` component class 尚未落地，全專案 build 會被本批 binder 的未解析 `Base*` 型別依賴擋住，需後續 UI component 批次補齊
