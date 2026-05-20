@@ -4,6 +4,15 @@
 
 ## 2026-05-20
 
+### 更新 — Doomsday Phase2 S5-C 完成 dls.game/IGG.Game.Notifys 155/155（event name const 表，effective 比例 99.4% 新高）
+
+- 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Notifys/` — 新增 155 個檔（0 baseline → 155/155 disk-cover）；effective 154（tiny &lt;100 行 147 + small 100-300 行 7）；placeholder 1（唯一 med 檔）
+- 更新：`Doomsday_Phase2_Progress.md` §1 — `dls.game` 由 615 disk / 335 effective 升至 770 disk / 489 effective；§9 補 S5-C 完成總結；進度總計 effective 13,093 → 13,247 (≈ 37.0%)
+- 更新：`Doomsday_Phase2_Completion_Plan.md` §0 effective 13,093 → 13,247；§8 S5-C 標 ✅
+- 更新：`Token_Cost_Ledger.md` — 新增 `s5c-full` 批次（~15K 主執行緒 token，S5 系列 token cost 最低）
+- 策略亮點：（1）原本擔心是 protobuf 需跳過（依使用者指示 dls.message protobuf 不處理），先 grep `Google.Protobuf` 0 命中確認非 protobuf 而是 event name `const string` 表；（2）event name const 表 strip-stub 完美保留，effective 比例 99.4% 為 S5 系列新高；（3）S5-D/E/F/G/H/C 累計完成 dls.game 700 檔 (444 effective)，平均 74 effective/batch
+- 驗證：`dls.game/IGG.Game.Notifys` 全 namespace marker grep 0（9 marker）
+
 ### 更新 — Doomsday Phase2 S5-H 完成 dls.game/IGG.Game.Data.Cache.IM 100/100（effective 比例 89% 為 S5 系列最高）
 
 - 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Data.Cache.IM/` — 新增 100 個檔（0 baseline → 100/100 disk-cover）；effective 89（tiny &lt;100 行 74 + small 100-300 行 15）；placeholder 11（med 7 + large 1 + xlarge 2 + huge 1）

@@ -2,7 +2,7 @@
 
 > 目的：把剩餘 `Annotated -> Final` 翻譯工作拆成可分派給多個 model / agent 的 section。
 > 入口：執行前先讀 `Doomsday_Phase2_Progress.md` §4 與 `Translation_SOP_TokenSafe.md`。
-> 最近更新：2026-05-20 00:30
+> 最近更新：2026-05-20 00:40
 
 ---
 
@@ -13,10 +13,10 @@
 | 口徑 | 數量 | 說明 |
 |---|---:|---|
 | Annotated total | 35,802 | `Input/Doomsday/RestoredSolution/Annotated/**/*.cs` |
-| Final exists | 20,725 | 有鏡像 Final 檔；其中部分為 placeholder，不代表品質合格 |
-| Disk missing | 15,077 | Annotated 有、Final 沒有 |
-| Effective completed | 13,093 | 進度表品質口徑；不含 template/stub/strip placeholder |
-| Effective remaining | 22,709 | 需要翻譯或重檢後才能算完成 |
+| Final exists | 20,880 | 有鏡像 Final 檔；其中部分為 placeholder，不代表品質合格 |
+| Disk missing | 14,922 | Annotated 有、Final 沒有 |
+| Effective completed | 13,247 | 進度表品質口徑；不含 template/stub/strip placeholder |
+| Effective remaining | 22,555 | 需要翻譯或重檢後才能算完成 |
 
 `dls.im` 特例已收斂：目前磁碟 380/380、全 dll marker grep 0，且 2026-05-19 13:55 build 摘要沒有 `dls.im` 語法錯。後續若要更高標準，可再做語意抽查，但不再列為 S1 阻塞。
 
@@ -160,7 +160,7 @@ High-priority candidate splits:
 |---|---|---:|
 | S5-A | `IGG.Game.Module.Activity.View` | 406 |
 | S5-B | `IGG.Game.Data.Cache.Mail.Type` | 341 |
-| S5-C | `IGG.Game.Notifys` | 155 |
+| S5-C | `IGG.Game.Notifys` | ✅ 155/155 disk-cover, 154 effective + 1 placeholder（event name `const string` 表，非 protobuf；S5 系列 effective 比例 99.4% 最高） |
 | S5-D | `IGG.Game.Helper` | ✅ 118/118 disk-cover, 91 effective (含 6 sample) + 27 placeholder |
 | S5-E | `IGG.Game.Module.MultiplierGate` | ✅ 116/116 disk-cover, 49 effective + 67 placeholder（全 IFix-only，主執行緒 strip-stub 一次過） |
 | S5-F | `IGG.Game.Module.March.Actor` | 107 |
