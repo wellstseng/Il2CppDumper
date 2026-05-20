@@ -4,6 +4,15 @@
 
 ## 2026-05-20
 
+### 更新 — Doomsday Phase2 S5-B 完成 dls.game/IGG.Game.Data.Cache.Mail.Type 341/341（Mail envelope 結構，effective 比例 88%）
+
+- 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Data.Cache.Mail.Type/` — 新增 341 個檔（0 baseline → 341/341 disk-cover）；effective 300（tiny 3 + small 297，small 比例 87% 為 S5 系列最高）；placeholder 41（med 40 + xlarge 1）
+- 更新：`Doomsday_Phase2_Progress.md` §1 — `dls.game` 由 770 disk / 489 effective 升至 1,111 disk / 789 effective；§9 補 S5-B 完成總結；進度總計 effective 13,247 → 13,547 (≈ 37.8%)
+- 更新：`Doomsday_Phase2_Completion_Plan.md` §0 effective 13,247 → 13,547；§8 S5-B 標 ✅
+- 更新：`Token_Cost_Ledger.md` — 新增 `s5b-full` 批次（~30K 主執行緒 token，0 LLM subagent）
+- 策略亮點：（1）Mail.Type 為 mail envelope 資料結構 namespace，small 100-300 比例 87% 為 S5 系列最高；（2）S5-D/E/F/G/H/C/B 累計完成 dls.game 1,041 檔 (744 effective)，平均 106 effective/batch；（3）本 session 連續完成 S5-E/F/G/H/C/B 共 923 檔 (659 effective)，全程主執行緒 0 LLM subagent
+- 驗證：`dls.game/IGG.Game.Data.Cache.Mail.Type` 全 namespace marker grep 0（9 marker）
+
 ### 更新 — Doomsday Phase2 S5-C 完成 dls.game/IGG.Game.Notifys 155/155（event name const 表，effective 比例 99.4% 新高）
 
 - 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Notifys/` — 新增 155 個檔（0 baseline → 155/155 disk-cover）；effective 154（tiny &lt;100 行 147 + small 100-300 行 7）；placeholder 1（唯一 med 檔）
