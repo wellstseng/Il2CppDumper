@@ -4,6 +4,15 @@
 
 ## 2026-05-20
 
+### 更新 — Doomsday Phase2 S5-A 完成 dls.game/IGG.Game.Module.Activity.View 406/406（S5 系列最大批 769K 行）
+
+- 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Module.Activity.View/` — 新增 406 個檔（0 baseline → 406/406 disk-cover）；effective 52（tiny 24 + small 28）；placeholder 354（med 59 + large 112 + xlarge 116 + huge 67，73% 為 UI Activity View 業務邏輯大檔，body 待 dedicated pass refine）
+- 更新：`Doomsday_Phase2_Progress.md` §1 — `dls.game` 由 1,111 disk / 789 effective 升至 1,517 disk / 841 effective；§9 補 S5-A 完成總結；進度總計 effective 13,547 → 13,599 (≈ 38.0%)
+- 更新：`Doomsday_Phase2_Completion_Plan.md` §0 effective 13,547 → 13,599；§8 S5-A 標 ✅
+- 更新：`Token_Cost_Ledger.md` — 新增 `s5a-full` 批次（~40K 主執行緒 token，0 LLM subagent；S5 系列最大批次驗證 strip-stub-only 配方 scalability）
+- 策略亮點：（1）S5 系列最大規模批次（769K 行 vs S5-F 135K）走純 strip-stub-only 仍能完整 disk-cover + marker clean，驗證配方 scalability；（2）effective 比例 13% 為 S5 系列最低，對應 UI View 業務邏輯密度最高；（3）本 session 累計連續 7 個 batch (S5-E/F/G/H/C/B/A) 共 1,329 檔 (711 effective)，全程主執行緒 0 LLM subagent
+- 驗證：`dls.game/IGG.Game.Module.Activity.View` 全 namespace marker grep 0（9 marker）
+
 ### 更新 — Doomsday Phase2 S5-B 完成 dls.game/IGG.Game.Data.Cache.Mail.Type 341/341（Mail envelope 結構，effective 比例 88%）
 
 - 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Data.Cache.Mail.Type/` — 新增 341 個檔（0 baseline → 341/341 disk-cover）；effective 300（tiny 3 + small 297，small 比例 87% 為 S5 系列最高）；placeholder 41（med 40 + xlarge 1）

@@ -1,6 +1,6 @@
 # Doomsday Phase2 Annotated→Final — 多 agent 平行協調
 
-> 最後更新：2026-05-20 00:50（S5-B 完成：`dls.game/IGG.Game.Data.Cache.Mail.Type` 341/341 disk-cover；effective +300 至 13,547；41 placeholder）
+> 最後更新：2026-05-20 01:00（S5-A 完成：`dls.game/IGG.Game.Module.Activity.View` 406/406 disk-cover；effective +52 至 13,599；354 placeholder；S5 系列最大批 769K 行）
 > 目的：協調 Claude (judy-cli) + Codex 平行翻譯，避免重複作業
 > 權威 SOP：見 §「Codex 必讀清單」
 
@@ -17,7 +17,7 @@
 | dls.framework.common | 234 | 234 | ✅ 完成（S2-B 全 dll 磁碟 234/234；marker grep 0；含 IFix wrapper 5546→380 stub、Protobuf runtime stub、Reflection descriptor stub；大檔 body 待後續 dedicated pass refine） | Claude S2B (主+Sub-A/B/C/D/E/F/G/H + stub-strip) |
 | dls.framework.unsafe | 4 | 4 | ✅ 完成 | Claude Batch-1 |
 | dls.framework | 547 | 547 disk / 6 effective | 🟡 partial（2 sample + IFix runtime 4 抄 dls.framework.common 已驗證範本；其餘 541 為 strip-stub placeholder 不算翻譯，body 待 dedicated pass refine） | Claude S2C strip-stub |
-| dls.game | 7,828 | 1,111 disk / 789 effective | 🟡 partial（S1 45 + S5-D 118/85+27 + S5-E 116/49+67 + S5-F 107/32+75 + S5-G 104/35+69 + S5-H 100/89+11 + S5-C 155/154+1 + S5-B 341/300+41 Mail.Type） | Claude S1 + S5-D/E/F/G/H/C/B |
+| dls.game | 7,828 | 1,517 disk / 841 effective | 🟡 partial（S1 45 + S5-D 118/85+27 + S5-E 116/49+67 + S5-F 107/32+75 + S5-G 104/35+69 + S5-H 100/89+11 + S5-C 155/154+1 + S5-B 341/300+41 + S5-A 406/52+354 Activity.View） | Claude S1 + S5-D/E/F/G/H/C/B/A |
 | dls.im | 380 | 380 | ✅ 完成（S0 補齊缺檔；S1-A/B/C/D + residual marker pass 完成；全 dll marker grep 0，build 無 dls.im 語法錯） | Codex `dls-im-s0-s1` |
 | dls.message | 7,867 | 0 | ⏭️ 暫跳過（protobuf，依使用者指示先不處理） | — |
 | dls.plugins.processcontext | 6 | 6 | ✅ 完成 | Claude Batch-1 |
@@ -36,7 +36,7 @@
 | USDK.Module.Push.Editor | 46 | 46 | ✅ 完成 | Claude Batch-9 |
 | USDK.Windows | 1,776 | 1,776 disk / 0 effective | ⬜ 未完成（目前只有 strip-stub placeholder；沒有 pseudocode 語意還原，不算翻譯） | placeholder only |
 
-**進度總計**：Annotated 35,802 檔，有效 Final 落地 13,547 檔（`dls.ui.base` 11,128、`dls.im` 380、`USDK.Module.Operations.Editor` 207、`dls.framework.common` 234、`USDK.Module.BlacklistedWord.Editor` 51、S3-A `dls.config` 45、S4 117、S2-C 6 + S2-D 4、S5 累計 dls.game S1 45 + S5-D 85 + S5-E 49 + S5-F 32 + S5-G 35 + S5-H 89 + S5-C 154 + S5-B 300 = 789；不把 stub/strip/template placeholder 算入有效完成）≈ **37.8%**
+**進度總計**：Annotated 35,802 檔，有效 Final 落地 13,599 檔（`dls.ui.base` 11,128、`dls.im` 380、`USDK.Module.Operations.Editor` 207、`dls.framework.common` 234、`USDK.Module.BlacklistedWord.Editor` 51、S3-A `dls.config` 45、S4 117、S2-C 6 + S2-D 4、S5 累計 dls.game 841（S1 45 + S5-D 85 + S5-E 49 + S5-F 32 + S5-G 35 + S5-H 89 + S5-C 154 + S5-B 300 + S5-A 52）；不把 stub/strip/template placeholder 算入有效完成）≈ **38.0%**
 
 ---
 
@@ -242,3 +242,4 @@
 - 2026-05-20 00:30 **S5-H 完成**：`dls.game/IGG.Game.Data.Cache.IM` 100/100 disk-cover（0 baseline → 100 new）；總行數 38,645（S5 系列最小批，僅 S5-G 44%）；分布 tiny &lt;100: 74 / small 100-300: 15 / med 300-700: 7 / large 700-1500: 1 / xlarge 1500-3000: 2 / huge ≥3000: 1；body 密度檢查 22 檔 (100-700) 全 IFix-only；全 9 marker grep 0；effective 89（tiny 74 + small 15，effective 比例 89% 為 S5 系列最高），placeholder 11；token cost ~25K 為 S5 系列最低；策略亮點：「body 密度檢查」決策法則第四次套用驗證；S5-D/E/F/G/H 累計完成 dls.game 545 檔 (290 effective)，平均 ~58 effective/batch；Cache 類 namespace 因多為 IM 訊息資料結構（tiny enum/data class），effective 比例顯著高於 Module.* 業務邏輯 namespace
 - 2026-05-20 00:40 **S5-C 完成**：`dls.game/IGG.Game.Notifys` 155/155 disk-cover（0 baseline → 155 new）；總行數 4,988（極小規模，僅 S5-H 13%）；分布 tiny &lt;100: 147 / small 100-300: 7 / med 300-700: 1（無 large/xlarge/huge）；本 namespace 為 event name `const string` 表（如 `public const string AbTestCS2CLSyncNotify = "AbTestNotify_AbTestCS2CLSyncNotify"`），非業務邏輯也非 protobuf；strip-stub 完美保留所有 const 定義；全 9 marker grep 0；effective 154（tiny 147 + small 7，effective 比例 99.4% 為 S5 系列最高），placeholder 1；token cost ~15K 為 S5 系列最低；策略亮點：（1）原本擔心是 protobuf 結構需跳過（依使用者指示 dls.message protobuf 不處理），grep `Google.Protobuf` 0 命中確認非 protobuf 而是 event name const 表；（2）S5-D/E/F/G/H/C 累計完成 dls.game 700 檔 (444 effective)，平均 74 effective/batch；S5 剩 S5-A 406 / S5-B 341 / S5-I 6,448 約 7,195 檔
 - 2026-05-20 00:50 **S5-B 完成**：`dls.game/IGG.Game.Data.Cache.Mail.Type` 341/341 disk-cover（0 baseline → 341 new）；總行數 73,079；分布 tiny &lt;100: 3 / small 100-300: 297 (87%) / med 300-700: 40 / xlarge 1500-3000: 1（無 large/huge）；0 protobuf；strip-stub 一次跑 341；全 9 marker grep 0；effective 300（tiny 3 + small 297），placeholder 41（med 40 + xlarge 1）；effective 比例 88%；token cost ~30K；策略亮點：（1）Mail.Type 為 mail envelope 資料結構 namespace，small 比例 87% 為 S5 系列最高，對應 strip-stub 配方 effective 比例同步高；（2）S5-D/E/F/G/H/C/B 累計完成 dls.game 1,041 檔 (744 effective)，平均 106 effective/batch；S5 剩 S5-A 406 / S5-I 6,448 約 6,854 檔；（3）本 session 連續完成 S5-E/F/G/H/C/B 共 923 檔 (659 effective)，全程主執行緒 0 LLM subagent
+- 2026-05-20 01:00 **S5-A 完成**：`dls.game/IGG.Game.Module.Activity.View` 406/406 disk-cover（0 baseline → 406 new）；總行數 769,751（S5 系列最大批，比 S5-F 5.7 倍 / S5-E 7 倍）；分布 tiny &lt;100: 24 / small 100-300: 28 / med 300-700: 59 / large 700-1500: 112 / xlarge 1500-3000: 116 / huge ≥3000: 67；16 個 Google.Protobuf 結構（已驗 strip-stub 對 protobuf 安全，僅砍 IL2CPP/Ghidra noise）；strip-stub 一次跑 406；全 9 marker grep 0；effective 52（tiny 24 + small 28），placeholder 354（med+large+xlarge+huge 73% 為 UI Activity View 業務邏輯大檔，body 待 dedicated pass refine）；effective 比例 13% 為 S5 系列最低（業務邏輯密度最高）；token cost ~40K；策略亮點：（1）S5 系列最大規模批次走純 strip-stub-only 仍能完整 disk-cover + marker clean；（2）本 session 連續完成 S5-E/F/G/H/C/B/A 共 1,329 檔 (711 effective)，全程主執行緒 0 LLM subagent；（3）S5-D/E/F/G/H/C/B/A 累計完成 dls.game 1,447 檔 (796 effective)，平均 ~100 effective/batch；S5 剩 S5-I 6,448 檔（需多 session 拆批）
