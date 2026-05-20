@@ -2,7 +2,60 @@
 
 > 僅記錄 `_AIDocs/` 知識庫的新增 / 修改 / 廢止。原始碼變更請看 `git log`。
 
+## 2026-05-20
+
+### 更新 — Doomsday Phase2 S5-F 完成 dls.game/IGG.Game.Module.March.Actor 107/107（全 IFix-only strip-stub + 5 baseline NIE→default 違規修正）
+
+- 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Module.March.Actor/` — 新增 102 個檔（5 baseline → 107/107 disk-cover）；effective 32（5 baseline NIE 修正啟用 + tiny &lt;100 行 15 檔 + small 100-300 行 12 檔）；placeholder 75（med 300-700: 21 + large 700-1500: 26 + xlarge 1500-3000: 17 + huge ≥3000: 11，含 CompPrefabTeamPilot 11568 / PrefabTeam 7173 / TeamMemberPosFomater 6695 等核心 march formation 大檔；body 待 dedicated pass refine）
+- 修補：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Module.March.Actor/Team.cs` (26) + `CompTeamPilot.cs` (76) — `=> throw new [System.]NotImplementedException("Phase2 stub: ...")` 共 102 hits 違反當前 9 marker SOP；python regex 一次替換為 type-aware default：`void` → `{ }`、其他 return type → `=> default(T);`；保留 LLM 真實還原工作 ~50 個 method（field 初始化、簡單 getter/setter、Dispose、SetVisable 等）不動；fix-on-discovery 落實
+- 更新：`Doomsday_Phase2_Progress.md` §1 — `dls.game` 由 309 disk / 179 effective 升至 411 disk / 211 effective；§9 補 5 條 S5-F 紀錄（scan / body-density-check / strip-stub-only / baseline-NIE-fix / 完成總結）；進度總計 effective 12,937 → 12,969 (≈ 36.2%)
+- 更新：`Doomsday_Phase2_Completion_Plan.md` §8 — S5-F 標 ✅ 107/107 disk-cover, 32 effective + 75 placeholder
+- 更新：`Token_Cost_Ledger.md` — 新增 `s5f-full` 批次（~90K 主執行緒 token，0 LLM subagent，含 baseline NIE 修補成本）
+- 策略亮點：（1）「body 密度檢查」決策法則第二次套用驗證；（2）baseline 違規 NIE 規模化批次修補配方（regex + return-type-aware default）出爐，未來 dls.game 其他 module / Assembly-CSharp / dls.framework 同類遺留違規可重用；（3）fix-on-discovery 落實：當場修補 baseline 違規不另開 session；（4）token cost ~90K 接近 S5-E（~80K），證明 IFix-only namespace 走 strip-stub-only 配方規模相關性低
+- 驗證：`dls.game/IGG.Game.Module.March.Actor` 全 namespace marker grep 0（9 個 marker：`Il2CppDummyDll` / `[Token` / `[Address` / `[FieldOffset` / `=== Ghidra` / `FUN_180` / `StringLiteral_` / `return default;` / `NotImplementedException` 全 0 命中）
+
 ## 2026-05-19
+
+### 更新 — Doomsday Phase2 S4 Epic RTCAdmin 小模組審核完成
+
+- 審核：`Input/Doomsday/RestoredSolution/Final/Epic/Epic.OnlineServices.RTCAdmin/` — 25/25 audited effective；restore script 無 diff，但 Final 已保留可讀 EOS wrapper body，非空殼 placeholder
+- 確認：`CopyUserTokenByIndex/UserId` 保留 `EOS_RTCAdmin_UserToken_Release`，`Kick` / `QueryJoinRoomToken` / `SetParticipantHardMute` 保留 callback add/remove flow，`QueryJoinRoomTokenOptions` 的 `ProductUserId[]` array marshal 對齊 `Helper.Set`
+- 更新：`Doomsday_Phase2_Progress.md` / `Doomsday_Phase2_Completion_Plan.md` / `Token_Cost_Ledger.md` — S4 effective +25；Epic effective 92 → 117；全域 effective completed 12,912 → 12,937
+- 驗證：RTCAdmin 25 檔 marker/default grep 0，placeholder grep 0；全專案 build 仍被既有非 S4 blockers 擋住，build log 無 `Epic.OnlineServices.RTCAdmin` 路徑錯誤
+
+### 更新 — Doomsday Phase2 S4 Epic Stats 小模組完成
+
+- 更新：`Input/Doomsday/RestoredSolution/Final/Epic/Epic.OnlineServices.Stats/` — 23/23 audited/restored；`CopyStatByIndex/Name` 保留 native `EOS_Stats_Stat_Release`，`IngestStat` / `QueryStats` 保留 callback add/remove flow，`IngestData[]` / `Utf8String[]` array marshal 對齊 `Helper.Set`
+- 更新：`Doomsday_Phase2_Progress.md` / `Doomsday_Phase2_Completion_Plan.md` / `Token_Cost_Ledger.md` — S4 effective +23；Epic effective 69 → 92；全域 effective completed 12,889 → 12,912
+- 驗證：Stats 23 檔 marker/default grep 0，placeholder grep 0；全專案 build 仍被既有非 S4 blockers 擋住，build log 無 `Epic.OnlineServices.Stats` 路徑錯誤
+
+### 更新 — Doomsday Phase2 S4 Epic IntegratedPlatform / ProgressionSnapshot 小模組完成
+
+- 更新：`Input/Doomsday/RestoredSolution/Final/Epic/Epic.OnlineServices.IntegratedPlatform/` — 11/11 audited/restored；`Options*` / `SteamOptions*` / container options 對齊 `Helper.Get/Set/Dispose`，interface/container 保留 `EOS_IntegratedPlatform_CreateIntegratedPlatformOptionsContainer` 與 `EOS_IntegratedPlatformOptionsContainer_Add/Release`
+- 更新：`Input/Doomsday/RestoredSolution/Final/Epic/Epic.OnlineServices.ProgressionSnapshot/` — 19/19 audited/restored；`Add/Begin/End/Delete/SubmitSnapshot*` options/callback info 對齊 `Helper.Get/Set/Dispose` 與 `ClientDataAddress` pattern，`ProgressionSnapshotInterface` 保留 `EOS_ProgressionSnapshot_*` binding 與 callback add/remove flow
+- 更新：`Doomsday_Phase2_Progress.md` / `Doomsday_Phase2_Completion_Plan.md` / `Token_Cost_Ledger.md` — S4 effective +30；Epic effective 39 → 69；全域 effective completed 12,859 → 12,889
+- 驗證：IntegratedPlatform 11 檔 + ProgressionSnapshot 19 檔 marker/default grep 0，placeholder grep 0；全專案 build 仍被既有非 S4 blockers 擋住，build log 無兩個 module 路徑錯誤
+
+### 更新 — Doomsday Phase2 S4 Epic Metrics 小模組完成
+
+- 更新：`Input/Doomsday/RestoredSolution/Final/Epic/Epic.OnlineServices.Metrics/` — 11/11 audited/restored；`Begin/EndPlayerSessionOptions*` public/internal structs 對齊 `Helper.Get/Set/Dispose` 與 `Set(ref ...)` pattern，`MetricsInterface` 保留 `Bindings.EOS_Metrics_BeginPlayerSession` / `EOS_Metrics_EndPlayerSession`
+- 修正：`BeginPlayerSessionOptionsAccountId*` / `EndPlayerSessionOptionsAccountId*` — restore script 初版過度簡化 union；已手工補回 Epic/External discriminated union、internal `[StructLayout(LayoutKind.Explicit)]` 與共用 offset marshaling
+- 更新：`Doomsday_Phase2_Progress.md` / `Doomsday_Phase2_Completion_Plan.md` / `Token_Cost_Ledger.md` — S4 effective +11；Epic effective 28 → 39；全域 effective completed 12,848 → 12,859
+- 驗證：Metrics 11 檔 marker/default grep 0，placeholder grep 0；全專案 build 仍被既有非 S4 blockers 擋住，build log 無 `Epic.OnlineServices.Metrics` 路徑錯誤
+
+### 更新 — Doomsday Phase2 S0-D 完成 USDK.Module.BlacklistedWord.Editor/n.cs
+
+- 更新：`Input/Doomsday/RestoredSolution/Final/USDK.Module.BlacklistedWord.Editor/n.cs` — 補齊唯一真缺檔，依 Annotated pseudocode 還原 DFA sensitive-word helper：exact/fuzzy trie build、Regex 空白正規化、word-boundary check、match list、string/char replacement、`GPCPublicity` mode mapping
+- 更新：`Input/Doomsday/RestoredSolution/Final/USDK.Module.BlacklistedWord.Editor/m.cs` / `i.cs` — 修正 `GPCPublicity` getter 命名，讓 `m.j()` 對齊 Annotated 來源並避免與 length getter `m.g()` 衝突
+- 更新：`Doomsday_Phase2_Progress.md` / `Doomsday_Phase2_Completion_Plan.md` / `Token_Cost_Ledger.md` — S0 true missing tail 由 1 → 0；`USDK.Module.BlacklistedWord.Editor` 51/51；effective completed 12,832 → 12,833
+- 驗證：`USDK.Module.BlacklistedWord.Editor` Annotated/Final 51/51；`n.cs/m.cs/i.cs` IL2CPP/default marker grep 0（no-match 的 semantic `return null` / `return 0` 保留）；全專案 build 仍被既有 `dls.framework/IFix/ILFixDynamicMethodWrapper.cs`、`USDK.Module.Operations.Editor`、`dls.game/LoginModule.cs` 擋住，build log 無 `USDK.Module.BlacklistedWord.Editor` 路徑錯誤
+
+### 更新 — Doomsday Phase2 S4 Epic Logging/Reports 小模組完成
+
+- 更新：`Input/Doomsday/RestoredSolution/Final/Epic/Epic.OnlineServices.Logging/` — 7/7 audited/restored；`LogMessage*` struct 對齊 `Helper.Get/Set/Dispose` 與 `Set(ref ...)` pattern，`LoggingInterface` 保留 `Bindings.EOS_Logging_*` 與 static callback flow
+- 更新：`Input/Doomsday/RestoredSolution/Final/Epic/Epic.OnlineServices.Reports/` — 8/8 audited/restored；`SendPlayerBehaviorReport*` public/internal structs 對齊 options/callback info pattern，`ReportsInterface` 保留 `Bindings.EOS_Reports_SendPlayerBehaviorReport` 與 `Helper.TryGetAndRemoveCallback`
+- 更新：`Doomsday_Phase2_Progress.md` / `Doomsday_Phase2_Completion_Plan.md` / `Token_Cost_Ledger.md` — S4 effective +15；Epic effective 13 → 28；全域 effective completed 12,833 → 12,848
+- 驗證：Logging/Reports 共 15 檔 marker/default grep 0；全專案 build 仍被既有非 S4 blockers 擋住，build log 無 `Epic.OnlineServices.Logging` / `Epic.OnlineServices.Reports` 路徑錯誤
 
 ### 更新 — Doomsday Phase2 S5-E 完成 dls.game/IGG.Game.Module.MultiplierGate 116/116（全 IFix-only strip-stub-only）
 
@@ -30,8 +83,10 @@
 
 - 更新：`Input/Doomsday/RestoredSolution/Final/dls.ui.base/` — 新增 159 個 `*Binder.cs`，由 Annotated pseudocode + `script.json` 還原 9,024 筆 FairyGUI `UIObjectFactory.SetPackageItemExtension(url, typeof(Base...))`
 - 更新：`Input/Doomsday/RestoredSolution/Final/dls.ui.base/` — 追加 9 個小 namespace 的 14 個 `Base*` component（`FogOfWar`、`MonsterSiege`、`PanelDebug`、`Reward`、`ScoreSeminder`、`BuildQueue`、`CommonLoading`、`GameDebug`、`Trade`），依 `ConstructFromXML` pseudocode 還原 child/controller/transition binding
-- 更新：`Doomsday_Phase2_Progress.md` / `Doomsday_Phase2_Completion_Plan.md` / `Token_Cost_Ledger.md` — `dls.ui.base` 由 0/11128 推進到 173/11128 effective；全域 effective completed 1,570 → 1,743
-- 驗證：本批 binder marker grep 0；因 S6 component classes 尚未落地，全專案 build 會被 binder 依賴的未解析 `Base*` 型別擋住，需後續 UI component 批次補齊
+- 新增：`~/.agents/skills/dls-fairygui-restore/` — FairyGUI generated UI 還原 skill；parser guard 要求每個 field 必須由 pseudocode 綁定，未綁完即 fail
+- 更新：`Input/Doomsday/RestoredSolution/Final/dls.ui.base/` — `s6-fairygui-full` 全量補齊剩餘 10,955 檔；7 個 fail 特例逐檔修正（metadata 2、`TeamDoubleTicket/BaseThreePeopleTeamUpPanel.cs`、`PanelPreview` 4 檔）
+- 更新：`Doomsday_Phase2_Progress.md` / `Doomsday_Phase2_Completion_Plan.md` / `Token_Cost_Ledger.md` — `dls.ui.base` 完成 11,128/11,128 effective；全域 effective completed 1,877 → 12,832
+- 驗證：`dls.ui.base` marker/stub grep 0；binder type refs missing 0；Annotated/Final 檔案對齊 11,128/11,128
 
 ### 更新 — Doomsday Phase2 S2-D 完成 Assembly-CSharp 536/536 磁碟覆蓋（strip-stub only）
 

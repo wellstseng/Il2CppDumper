@@ -2,7 +2,7 @@
 
 > 目的：把剩餘 `Annotated -> Final` 翻譯工作拆成可分派給多個 model / agent 的 section。
 > 入口：執行前先讀 `Doomsday_Phase2_Progress.md` §4 與 `Translation_SOP_TokenSafe.md`。
-> 最近更新：2026-05-19 22:05
+> 最近更新：2026-05-19 23:59
 
 ---
 
@@ -13,10 +13,10 @@
 | 口徑 | 數量 | 說明 |
 |---|---:|---|
 | Annotated total | 35,802 | `Input/Doomsday/RestoredSolution/Annotated/**/*.cs` |
-| Final exists | 9,232 | 有鏡像 Final 檔；其中大量為 placeholder，不代表品質合格 |
-| Disk missing | 26,570 | Annotated 有、Final 沒有 |
-| Effective completed | 1,743 | 進度表品質口徑；不含 template/stub/strip placeholder |
-| Effective remaining | 34,059 | 需要翻譯或重檢後才能算完成 |
+| Final exists | 20,419 | 有鏡像 Final 檔；其中部分為 placeholder，不代表品質合格 |
+| Disk missing | 15,386 | Annotated 有、Final 沒有 |
+| Effective completed | 12,937 | 進度表品質口徑；不含 template/stub/strip placeholder |
+| Effective remaining | 22,865 | 需要翻譯或重檢後才能算完成 |
 
 `dls.im` 特例已收斂：目前磁碟 380/380、全 dll marker grep 0，且 2026-05-19 13:55 build 摘要沒有 `dls.im` 語法錯。後續若要更高標準，可再做語意抽查，但不再列為 S1 阻塞。
 
@@ -55,13 +55,13 @@ Notes: <only concrete blockers>
 
 | Section | Scope | Effective remaining | Why now | Suggested agents |
 |---|---|---:|---|---:|
-| S0 | True missing tail | 1 | `USDK.Module.BlacklistedWord.Editor/n.cs` 仍需 dedicated pass；其餘已收斂 | 1 |
+| S0 | True missing tail | 0 | ✅ done：`USDK.Module.BlacklistedWord.Editor/n.cs` dedicated pass completed | 0 |
 | S1 | `dls.im` recheck | 0 | ✅ done：marker/syntax criteria passed | 0 |
 | S2 | Medium partial dlls | 1,477 | 最容易快速提高有效完成數 | 4-6 |
 | S3 | Generated/config-like | 10,813 | 大量 enum / DTO / protobuf 類型，可用小批次穩定推進 | 8-12 |
-| S4 | External SDK wrappers | 3,461 effective | `Epic` / `USDK.Windows` disk-covered placeholder exists, but only `Epic.OnlineServices.Sanctions` has been redone | 4-8 |
-| S5 | `dls.game` gameplay | 7,747 | 業務邏輯多，需按 namespace 分派 | 8-12 |
-| S6 | `dls.ui.base` UI | 10,955 | 最大區塊，必須拆 UI namespace；159 個 `*Binder.cs` + 14 個小 component 已完成 | 12-20 |
+| S4 | External SDK wrappers | 3,357 effective | `Epic` / `USDK.Windows` disk-covered placeholder exists, but only `Epic.OnlineServices.Sanctions/Logging/Reports/Metrics/IntegratedPlatform/ProgressionSnapshot/Stats/RTCAdmin` have been redone/audited | 4-8 |
+| S5 | `dls.game` gameplay | 7,649 | 業務邏輯多，需按 namespace 分派；S5-D/S5-E 已推進 140 effective | 8-12 |
+| S6 | `dls.ui.base` UI | 0 | ✅ done：11,128/11,128 FairyGUI generated UI restored from pseudocode | 0 |
 
 ---
 
@@ -74,7 +74,7 @@ Notes: <only concrete blockers>
 | S0-A | `dls.im/IFix/IDMAP0.cs` | ✅ done |
 | S0-B | `dls.im/IFix/ILFixDynamicMethodWrapper.cs` | ✅ done；大型 IFix dispatch wrapper |
 | S0-C | `IFix.Core` remaining 1 | ✅ done：`Properties/AssemblyInfo.cs` |
-| S0-D | `USDK.Module.BlacklistedWord.Editor` remaining 1 | ⏭️ skip：`n.cs` 1610 行 obfuscated logic，需單獨評估 |
+| S0-D | `USDK.Module.BlacklistedWord.Editor` remaining 1 | ✅ done：`n.cs` 依 DFA sensitive-word pseudocode 還原；同模組 `m.cs/i.cs` 修正 `GPCPublicity` getter 命名 |
 
 Suggested handling:
 - `ILFixDynamicMethodWrapper.cs` 以 method family 分批，例如 `__Gen_Wrap_0~49`、`50~99`。
@@ -141,7 +141,7 @@ Rules:
 
 | Section | DLL | Missing | Top namespaces |
 |---|---|---:|---|
-| S4-A | `Epic` | 1,685 effective | `Epic.OnlineServices.Sanctions` 13/13 redone; remaining strip-stub placeholders must redo by `Epic.OnlineServices.<module>` |
+| S4-A | `Epic` | 1,581 effective | `Epic.OnlineServices.Sanctions` 13/13 redone; `Logging` 7/7 + `Reports` 8/8 + `Metrics` 11/11 + `IntegratedPlatform` 11/11 + `ProgressionSnapshot` 19/19 + `Stats` 23/23 + `RTCAdmin` 25/25 audited/restored/effective; remaining strip-stub placeholders must redo by `Epic.OnlineServices.<module>` |
 | S4-B | `USDK.Windows` | 1,776 effective | strip-stub placeholder exists; must redo by `GPC.Modules.*` namespace family |
 
 Suggested batching:
@@ -178,9 +178,10 @@ Avoid:
 
 Largest block: 11,128 files. Must be parallelized by UI namespace.
 
-Seed completed:
+Completed:
 - `s6-binder-seed`: 159 個 `*Binder.cs` effective，9,024 筆 FairyGUI `UIObjectFactory.SetPackageItemExtension` registration 已由 Annotated pseudocode + `script.json` 還原；component classes 尚未落地，後續需按 namespace 補齊 `Base*` UI class。
 - `s6-small-ui-components`: `IGG.Game.UI.FogOfWar`、`IGG.Game.UI.MonsterSiege`、`IGG.Game.UI.PanelDebug`、`IGG.Game.UI.Reward`、`IGG.Game.UI.ScoreSeminder`、`IGG.Game.UI.BuildQueue`、`IGG.Game.UI.CommonLoading`、`IGG.Game.UI.GameDebug`、`IGG.Game.UI.Trade` 小 namespace 完成；component class 已依 `ConstructFromXML` pseudocode 還原 child/controller/transition binding。
+- `s6-fairygui-full`: 剩餘 10,955 檔全量完成；parser guard 要求每個 field 必須由 pseudocode `GetController/GetChild/GetTransition` 綁定，未綁完即 fail；最終 marker/stub grep 0、binder type refs missing 0。
 
 Initial section map:
 
@@ -211,7 +212,7 @@ UI rules:
 1. Launch 4 agents on `S2` medium partial dlls.
 2. Launch generated/config wave (`S3`) only after the first agents confirm marker/syntax quality.
 3. Launch `S4` external SDK wrappers.
-4. Launch `S5` and `S6` large business/UI sections in waves, 8-20 agents depending on model budget.
+4. Launch `S5` large business sections in waves; skip `S6` because `dls.ui.base` is already 11,128/11,128 complete.
 5. Treat `dls.im` as closed unless a later semantic audit explicitly reopens individual files.
 
 ---
