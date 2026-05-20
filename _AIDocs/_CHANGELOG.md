@@ -4,6 +4,15 @@
 
 ## 2026-05-20
 
+### 更新 — Doomsday Phase2 S5-G 完成 dls.game/IGG.Game.Module.Common.View 104/104（全 IFix-only strip-stub，0 baseline）
+
+- 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Module.Common.View/` — 新增 104 個檔（0 baseline → 104/104 disk-cover）；effective 35（tiny &lt;100 行 23 + small 100-300 行 12）；placeholder 69（med 23 + large 31 + xlarge 12 + huge 3；body 待 dedicated pass refine）
+- 更新：`Doomsday_Phase2_Progress.md` §1 — `dls.game` 由 411 disk / 211 effective 升至 515 disk / 246 effective；§9 補 2 條 S5-G 紀錄；進度總計 effective 12,969 → 13,004 (≈ 36.3%)
+- 更新：`Doomsday_Phase2_Completion_Plan.md` §0 effective 12,969 → 13,004；§8 S5-G 標 ✅
+- 更新：`Token_Cost_Ledger.md` — 新增 `s5g-full` 批次（~30K 主執行緒 token，0 LLM subagent，S5 系列 token cost 最低）
+- 策略亮點：（1）「body 密度檢查」決策法則第三次套用驗證；S5-E/F/G 連續確認 dls.game IFix-only namespace 全走 strip-stub-only 配方；（2）S5 至此 S5-D/E/F/G 共完成 dls.game 445 檔（201 effective），平均 50 effective/batch；S5 剩 S5-A 406 / S5-B 341 / S5-C 155 / S5-H 100 / S5-I 6,448 約 7,450 檔
+- 驗證：`dls.game/IGG.Game.Module.Common.View` 全 namespace marker grep 0（9 marker）
+
 ### 更新 — Doomsday Phase2 S5-F 完成 dls.game/IGG.Game.Module.March.Actor 107/107（全 IFix-only strip-stub + 5 baseline NIE→default 違規修正）
 
 - 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Module.March.Actor/` — 新增 102 個檔（5 baseline → 107/107 disk-cover）；effective 32（5 baseline NIE 修正啟用 + tiny &lt;100 行 15 檔 + small 100-300 行 12 檔）；placeholder 75（med 300-700: 21 + large 700-1500: 26 + xlarge 1500-3000: 17 + huge ≥3000: 11，含 CompPrefabTeamPilot 11568 / PrefabTeam 7173 / TeamMemberPosFomater 6695 等核心 march formation 大檔；body 待 dedicated pass refine）

@@ -1,6 +1,6 @@
 # Doomsday Phase2 Annotated→Final — 多 agent 平行協調
 
-> 最後更新：2026-05-20 00:10（S5-F 完成：`dls.game/IGG.Game.Module.March.Actor` 107/107 disk-cover；effective +32 至 12,969；75 placeholder；含 5 baseline NIE→default 違規修正）
+> 最後更新：2026-05-20 00:20（S5-G 完成：`dls.game/IGG.Game.Module.Common.View` 104/104 disk-cover；effective +35 至 13,004；69 placeholder）
 > 目的：協調 Claude (judy-cli) + Codex 平行翻譯，避免重複作業
 > 權威 SOP：見 §「Codex 必讀清單」
 
@@ -17,7 +17,7 @@
 | dls.framework.common | 234 | 234 | ✅ 完成（S2-B 全 dll 磁碟 234/234；marker grep 0；含 IFix wrapper 5546→380 stub、Protobuf runtime stub、Reflection descriptor stub；大檔 body 待後續 dedicated pass refine） | Claude S2B (主+Sub-A/B/C/D/E/F/G/H + stub-strip) |
 | dls.framework.unsafe | 4 | 4 | ✅ 完成 | Claude Batch-1 |
 | dls.framework | 547 | 547 disk / 6 effective | 🟡 partial（2 sample + IFix runtime 4 抄 dls.framework.common 已驗證範本；其餘 541 為 strip-stub placeholder 不算翻譯，body 待 dedicated pass refine） | Claude S2C strip-stub |
-| dls.game | 7,828 | 411 disk / 211 effective | 🟡 partial（S1 Launch/Login/MainScene/Cache 45 effective + S5-D `IGG.Game.Helper` 118 disk / 85 effective + 27 placeholder + S5-E `IGG.Game.Module.MultiplierGate` 116 disk / 49 effective + 67 placeholder + S5-F `IGG.Game.Module.March.Actor` 107 disk / 32 effective + 75 placeholder；含 5 baseline NIE→default 違規修正） | Claude S1 + S5-D + S5-E + S5-F |
+| dls.game | 7,828 | 515 disk / 246 effective | 🟡 partial（S1 45 effective + S5-D `IGG.Game.Helper` 118 disk / 85 eff + 27 ph + S5-E `MultiplierGate` 116 disk / 49 eff + 67 ph + S5-F `March.Actor` 107 disk / 32 eff + 75 ph (含 5 baseline NIE 修正) + S5-G `Common.View` 104 disk / 35 eff + 69 ph） | Claude S1 + S5-D/E/F/G |
 | dls.im | 380 | 380 | ✅ 完成（S0 補齊缺檔；S1-A/B/C/D + residual marker pass 完成；全 dll marker grep 0，build 無 dls.im 語法錯） | Codex `dls-im-s0-s1` |
 | dls.message | 7,867 | 0 | ⏭️ 暫跳過（protobuf，依使用者指示先不處理） | — |
 | dls.plugins.processcontext | 6 | 6 | ✅ 完成 | Claude Batch-1 |
@@ -36,7 +36,7 @@
 | USDK.Module.Push.Editor | 46 | 46 | ✅ 完成 | Claude Batch-9 |
 | USDK.Windows | 1,776 | 1,776 disk / 0 effective | ⬜ 未完成（目前只有 strip-stub placeholder；沒有 pseudocode 語意還原，不算翻譯） | placeholder only |
 
-**進度總計**：Annotated 35,802 檔，有效 Final 落地 12,969 檔（`dls.ui.base` 11,128/11,128、`dls.im` 380/380、`USDK.Module.Operations.Editor` 207/207、`dls.framework.common` 234/234、`USDK.Module.BlacklistedWord.Editor` 51/51、S3-A `dls.config` 45 檔、S4 `Epic.OnlineServices.Sanctions/Logging/Reports/Metrics/IntegratedPlatform/ProgressionSnapshot/Stats/RTCAdmin` 117 檔、S2-C `dls.framework` IFix runtime 4 抄範本 + 2 sample、S2-D `Assembly-CSharp` IFix runtime 4 抄範本、S5-D `dls.game/IGG.Game.Helper` 85 effective、S5-E `dls.game/IGG.Game.Module.MultiplierGate` 49 effective、S5-F `dls.game/IGG.Game.Module.March.Actor` 32 effective；不把 stub/strip/template placeholder 算入有效完成）≈ **36.2%**
+**進度總計**：Annotated 35,802 檔，有效 Final 落地 13,004 檔（`dls.ui.base` 11,128/11,128、`dls.im` 380/380、`USDK.Module.Operations.Editor` 207/207、`dls.framework.common` 234/234、`USDK.Module.BlacklistedWord.Editor` 51/51、S3-A `dls.config` 45 檔、S4 `Epic.OnlineServices.Sanctions/Logging/Reports/Metrics/IntegratedPlatform/ProgressionSnapshot/Stats/RTCAdmin` 117 檔、S2-C `dls.framework` IFix runtime 4 抄範本 + 2 sample、S2-D `Assembly-CSharp` IFix runtime 4 抄範本、S5-D `IGG.Game.Helper` 85、S5-E `MultiplierGate` 49、S5-F `March.Actor` 32、S5-G `Common.View` 35；不把 stub/strip/template placeholder 算入有效完成）≈ **36.3%**
 
 ---
 
@@ -237,3 +237,5 @@
 - 2026-05-20 00:05 Claude `S5F-strip-stub-only` — `dls.game/IGG.Game.Module.March.Actor` 102 missing 全程主執行緒 python `tools/doomsday/strip_stub.py` 機械處理（含 smoke-test CompTeamExpeNormalPilot.cs verify 多行 C# attribute `[BindEntityComp(..., new Type[]{...})]` 不被誤砍）；本批 0 LLM subagent；type/member skeleton 完整保留
 - 2026-05-20 00:05 Claude `S5F-baseline-NIE-fix` — 發現 baseline 5 中 Team.cs / CompTeamPilot.cs 含 `=> throw new [System.]NotImplementedException("Phase2 stub: ...")` 共 102 hits（前批 LLM 翻譯 agent 用 NIE 標未實作 method，違反當前 9 marker SOP）；python regex 一次替換為 type-aware default：`void` → `{ }`、其他 return type → `=> default(T);`；保留 LLM 真實還原工作（field 初始化、簡單 getter/setter、Dispose 等 ~50 個 method 不動）；fix-on-discovery 落實，本批當場修補不另開 session
 - 2026-05-20 00:10 **S5-F 完成**：`dls.game/IGG.Game.Module.March.Actor` 107/107 disk-cover（5 baseline + 102 new）；全 9 marker grep 0；effective 32（5 baseline NIE 修正啟用 + tiny &lt;100 行 15 檔 + small 100-300 行 12 檔；strip-stub 完整保留 enum/data struct/interface/Comp* IFix-only trivial），placeholder 75（med 300-700: 21 + large 700-1500: 26 + xlarge 1500-3000: 17 + huge ≥3000: 11，含 CompPrefabTeamPilot 11568 / PrefabTeam 7173 / TeamMemberPosFomater 6695 等核心 march formation 大檔；body 待 dedicated pass refine）；策略亮點：（1）「body 密度檢查」決策法則第二次套用驗證；（2）baseline 違規 NIE 規模化批次修補配方（regex + return-type-aware default）出爐，未來其他 dll 同類遺留違規可重用；（3）首次於本 session 內 fix-on-discovery 對既有 Phase2 違規當場修補不另開 session
+- 2026-05-20 00:20 Claude `S5G-full` — `dls.game/IGG.Game.Module.Common.View` 全程主執行緒 strip-stub-only：0 baseline → 104/104 disk-cover；總行數 87,802（比 S5-F 35% 小）；分布 tiny &lt;100: 23 / small 100-300: 12 / med 300-700: 23 / large 700-1500: 31 / xlarge 1500-3000: 12 / huge ≥3000: 3；body 密度檢查 35 檔（100-700 行）僅 1 個 moderate body 6-20、34 個 IFix-only，沿用 S5-E/F 配方；本批 0 LLM subagent、0 baseline 違規；effective 35（tiny 23 + small 12），placeholder 69（med 23 + large 31 + xlarge 12 + huge 3）
+- 2026-05-20 00:20 **S5-G 完成**：`dls.game/IGG.Game.Module.Common.View` 104/104 disk-cover（0 baseline → 104 new）；全 9 marker grep 0；effective 35；placeholder 69；策略亮點：「body 密度檢查」決策法則第三次套用驗證；S5-E/F/G 三批連續驗證 dls.game IFix-only namespace 都可走純 strip-stub-only 配方

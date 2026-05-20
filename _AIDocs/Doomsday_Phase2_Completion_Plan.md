@@ -2,7 +2,7 @@
 
 > 目的：把剩餘 `Annotated -> Final` 翻譯工作拆成可分派給多個 model / agent 的 section。
 > 入口：執行前先讀 `Doomsday_Phase2_Progress.md` §4 與 `Translation_SOP_TokenSafe.md`。
-> 最近更新：2026-05-20 00:15
+> 最近更新：2026-05-20 00:20
 
 ---
 
@@ -13,10 +13,10 @@
 | 口徑 | 數量 | 說明 |
 |---|---:|---|
 | Annotated total | 35,802 | `Input/Doomsday/RestoredSolution/Annotated/**/*.cs` |
-| Final exists | 20,521 | 有鏡像 Final 檔；其中部分為 placeholder，不代表品質合格 |
-| Disk missing | 15,281 | Annotated 有、Final 沒有 |
-| Effective completed | 12,969 | 進度表品質口徑；不含 template/stub/strip placeholder |
-| Effective remaining | 22,833 | 需要翻譯或重檢後才能算完成 |
+| Final exists | 20,625 | 有鏡像 Final 檔；其中部分為 placeholder，不代表品質合格 |
+| Disk missing | 15,177 | Annotated 有、Final 沒有 |
+| Effective completed | 13,004 | 進度表品質口徑；不含 template/stub/strip placeholder |
+| Effective remaining | 22,798 | 需要翻譯或重檢後才能算完成 |
 
 `dls.im` 特例已收斂：目前磁碟 380/380、全 dll marker grep 0，且 2026-05-19 13:55 build 摘要沒有 `dls.im` 語法錯。後續若要更高標準，可再做語意抽查，但不再列為 S1 阻塞。
 
