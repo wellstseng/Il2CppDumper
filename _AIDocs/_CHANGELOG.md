@@ -4,6 +4,15 @@
 
 ## 2026-05-20
 
+### 更新 — Doomsday Phase2 S5-H 完成 dls.game/IGG.Game.Data.Cache.IM 100/100（effective 比例 89% 為 S5 系列最高）
+
+- 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Data.Cache.IM/` — 新增 100 個檔（0 baseline → 100/100 disk-cover）；effective 89（tiny &lt;100 行 74 + small 100-300 行 15）；placeholder 11（med 7 + large 1 + xlarge 2 + huge 1）
+- 更新：`Doomsday_Phase2_Progress.md` §1 — `dls.game` 由 515 disk / 246 effective 升至 615 disk / 335 effective；§9 補 S5-H 完成總結；進度總計 effective 13,004 → 13,093 (≈ 36.6%)
+- 更新：`Doomsday_Phase2_Completion_Plan.md` §0 effective 13,004 → 13,093；§8 S5-H 標 ✅
+- 更新：`Token_Cost_Ledger.md` — 新增 `s5h-full` 批次（~25K 主執行緒 token，0 LLM subagent，S5 系列 token cost 最低）
+- 策略亮點：（1）「body 密度檢查」決策法則第四次套用驗證；（2）Cache 類 namespace 因多為 IM 訊息資料結構（tiny enum/data class 74 個），effective 比例 89% 顯著高於 Module.* 業務邏輯 namespace；（3）S5-D/E/F/G/H 累計完成 dls.game 545 檔 (290 effective)，平均 ~58 effective/batch
+- 驗證：`dls.game/IGG.Game.Data.Cache.IM` 全 namespace marker grep 0（9 marker）
+
 ### 更新 — Doomsday Phase2 S5-G 完成 dls.game/IGG.Game.Module.Common.View 104/104（全 IFix-only strip-stub，0 baseline）
 
 - 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Module.Common.View/` — 新增 104 個檔（0 baseline → 104/104 disk-cover）；effective 35（tiny &lt;100 行 23 + small 100-300 行 12）；placeholder 69（med 23 + large 31 + xlarge 12 + huge 3；body 待 dedicated pass refine）
