@@ -1,6 +1,6 @@
 # Doomsday Phase2 Annotated→Final — 多 agent 平行協調
 
-> 最後更新：2026-05-20 01:00（S5-A 完成：`dls.game/IGG.Game.Module.Activity.View` 406/406 disk-cover；effective +52 至 13,599；354 placeholder；S5 系列最大批 769K 行）
+> 最後更新：2026-05-21 15:04（有效翻譯稽核：`Epic` 1,698/1,698 audit complete；`dls.config` / `USDK.Windows` / `dls.framework*` 大幅收斂但仍有 explicit suspicious；`dls.message` protobuf 仍依指示跳過）
 > 目的：協調 Claude (judy-cli) + Codex 平行翻譯，避免重複作業
 > 權威 SOP：見 §「Codex 必讀清單」
 
@@ -11,18 +11,18 @@
 | dll | Annotated | Final | 狀態 | 處理者 |
 |---|---:|---:|---|---|
 | Assembly-CSharp-firstpass | 9 | 9 | ✅ 完成 | Claude Batch-1 |
-| Assembly-CSharp | 536 | 536 disk / 9 effective | 🟡 partial（5 sample + IFix runtime 4 抄 dls.framework.common 已驗證範本；其餘 527 為 strip-stub placeholder 不算翻譯，body 待 dedicated pass refine） | Claude S2D strip-stub |
+| Assembly-CSharp | 536 | 536 disk / 9 confirmed / 475 audit-candidate | 🟡 partial（strict suspicious scan 61；candidate 不能直接升 effective，需 dedicated audit） | Claude S2D strip-stub |
 | behaviac.runtime | 177 | 177 | ✅ 完成 | Claude C3a/b + Codex redo |
-| dls.config | 2,946 | 2,946 disk / 45 effective | 🟡 partial（45 檔有人工/LLM 還原；其餘 template/stub/strip 產物只能當 placeholder，不算翻譯完成） | Codex `s3a-manual` + placeholder batch |
-| dls.framework.common | 234 | 234 | ✅ 完成（S2-B 全 dll 磁碟 234/234；marker grep 0；含 IFix wrapper 5546→380 stub、Protobuf runtime stub、Reflection descriptor stub；大檔 body 待後續 dedicated pass refine） | Claude S2B (主+Sub-A/B/C/D/E/F/G/H + stub-strip) |
+| dls.config | 2,946 | 2,946 disk / 45 confirmed / 2,759 audit-candidate | 🟡 partial（本輪 landed 多批 config/Dao/helper 修正；strict suspicious scan 187，`WorkshopEquipDao` 等仍未有效） | Codex `s3a-manual` + Codex 2026-05-21 refine |
+| dls.framework.common | 234 | 234 disk / 133 audit-candidate | 🟡 reopened by stricter effective audit（strict suspicious scan 101；原 S2-B disk-cover 仍有效，但 body 還要 dedicated refine） | Claude S2B + Codex 2026-05-21 audit |
 | dls.framework.unsafe | 4 | 4 | ✅ 完成 | Claude Batch-1 |
-| dls.framework | 547 | 547 disk / 6 effective | 🟡 partial（2 sample + IFix runtime 4 抄 dls.framework.common 已驗證範本；其餘 541 為 strip-stub placeholder 不算翻譯，body 待 dedicated pass refine） | Claude S2C strip-stub |
-| dls.game | 7,828 | 1,517 disk / 841 effective | 🟡 partial（S1 45 + S5-D 118/85+27 + S5-E 116/49+67 + S5-F 107/32+75 + S5-G 104/35+69 + S5-H 100/89+11 + S5-C 155/154+1 + S5-B 341/300+41 + S5-A 406/52+354 Activity.View） | Claude S1 + S5-D/E/F/G/H/C/B/A |
+| dls.framework | 547 | 547 disk / 6 confirmed / 331 audit-candidate | 🟡 partial（本輪修 `IGG.Framework.Config` / Excel / MultiKey / StringDao 等；strict suspicious scan 216） | Claude S2C strip-stub + Codex 2026-05-21 config refine |
+| dls.game | 7,828 | 7,828 disk / 3,673 confirmed / 5,583 audit-candidate | 🟡 partial（S5 全 dll disk-cover；strict suspicious scan 2,245，hard `Phase2 stub` 仍集中 March/MapOperation 舊 baseline） | Claude S1 + S5-D/E/F/G/H/C/B/A + Codex S5-I |
 | dls.im | 380 | 380 | ✅ 完成（S0 補齊缺檔；S1-A/B/C/D + residual marker pass 完成；全 dll marker grep 0，build 無 dls.im 語法錯） | Codex `dls-im-s0-s1` |
 | dls.message | 7,867 | 0 | ⏭️ 暫跳過（protobuf，依使用者指示先不處理） | — |
 | dls.plugins.processcontext | 6 | 6 | ✅ 完成 | Claude Batch-1 |
 | dls.ui.base | 11,128 | 11,128 | ✅ 完成（FairyGUI generated UI：159 binder + 10,967 component/metadata；由 pseudocode 還原 `BindAll`、`CreateInstance`、`ConstructFromXML` field binding；marker/stub/binder refs 全乾淨） | Codex `s6-binder-seed` + `s6-fairygui-full` |
-| Epic | 1,698 | 1,698 disk / 117 effective | 🟡 partial（`Epic.OnlineServices.Sanctions` 13 檔已重作；`Logging` 7 檔 + `Reports` 8 檔 + `Metrics` 11 檔 + `IntegratedPlatform` 11 檔 + `ProgressionSnapshot` 19 檔 + `Stats` 23 檔 + `RTCAdmin` 25 檔 audited/restored/effective；其餘 strip-stub placeholder 不算翻譯） | Codex S4 redo |
+| Epic | 1,698 | 1,698 confirmed effective | ✅ 完成（全 Epic wrapper audit complete；唯一 broad-scan hit 是 `Helper.GetDefault<T>()` 語意性 default，不算 placeholder；本輪修 2 個 marshal count mismatch） | Codex S4 redo + Codex 2026-05-21 Epic audit |
 | IFix.Core | 34 | 34 | ✅ 完成（VirtualMachine.cs stub 化，ILSpy 無法解析；Properties/AssemblyInfo.cs 已補） | Claude IFix-S1+S2 + Codex S0 |
 | netease | 40 | 40 | ✅ 完成 | Claude C1 |
 | sdk.peapod | 10 | 10 | ✅ 完成 | Claude Batch-1 |
@@ -34,29 +34,17 @@
 | USDK.Module.CPD.Editor | 40 | 40 | ✅ 完成 | Claude C1 + Codex redo |
 | USDK.Module.Operations.Editor | 207 | 207 | ✅ 完成（S2-A 全 dll 磁碟 207/207；marker grep 乾淨；10 個 700-1654 行大檔為 stub 形式保留 type/member skeleton，body 待後續 dedicated pass） | Claude S2A (主+Sub1-7) |
 | USDK.Module.Push.Editor | 46 | 46 | ✅ 完成 | Claude Batch-9 |
-| USDK.Windows | 1,776 | 1,776 disk / 0 effective | ⬜ 未完成（目前只有 strip-stub placeholder；沒有 pseudocode 語意還原，不算翻譯） | placeholder only |
+| USDK.Windows | 1,776 | 1,776 disk / 1,471 audit-candidate | 🟡 partial（本輪修 `PassportInformation` / `IAPPayload` payload semantics；strict suspicious scan 305，外部 SDK refs 仍阻擋 build） | placeholder + Codex 2026-05-21 SDK refine |
 
-**進度總計**：Annotated 35,802 檔，有效 Final 落地 13,599 檔（`dls.ui.base` 11,128、`dls.im` 380、`USDK.Module.Operations.Editor` 207、`dls.framework.common` 234、`USDK.Module.BlacklistedWord.Editor` 51、S3-A `dls.config` 45、S4 117、S2-C 6 + S2-D 4、S5 累計 dls.game 841（S1 45 + S5-D 85 + S5-E 49 + S5-F 32 + S5-G 35 + S5-H 89 + S5-C 154 + S5-B 300 + S5-A 52）；不把 stub/strip/template placeholder 算入有效完成）≈ **38.0%**
+**進度總計（confirmed effective）**：Annotated 35,802 檔，confirmed effective 18,012 檔（舊 16,431 + `Epic` audit promotion 1,581；不把 broad-scan candidate 直接算完成）≈ **50.3%**。
+
+**稽核口徑（audit-candidate ceiling）**：若只排除 explicit suspicious pattern，目前非 skipped roots 最多 24,797 檔可列 audit-candidate；仍有 3,115 個 explicit suspicious 檔（不含 `Epic.Helper.GetDefault<T>()` 語意性 default）需要 dedicated refine / blocker 分類。此口徑只用來排下一批，不等於完成。
 
 ---
 
-## 2. Claude 當前 in-flight agent（不要碰這些）
+## 2. 當前 in-flight agent
 
-| agent | 範圍 | 預估完成 |
-|---|---|---|
-| Batch-C1 | netease 缺 0 / USDK.Bridge 缺 10 / USDK.Module.CPD.Editor 缺 34 | ~15-20 分鐘 |
-| Batch-C2 | USDK.Foundation 缺 66 | ~15-20 分鐘 |
-| Batch-C3a | behaviac.runtime 缺檔字母序前 60 | ~15-20 分鐘 |
-| Batch-C3b | behaviac.runtime 缺檔字母序後 62 | ~15-20 分鐘 |
-
-> 2026-05-18 14:47 更新：Claude 撞上限前已部分落地；Codex 10:29 補尾產物曾因空殼化退回，14:47 已重做並完成抽樣品質檢查。
-
-**Claude 接下來會啟動的**（仍未啟，可被 Codex 搶）：
-- USDK.Module.Operations.Editor 殘 182 檔
-- dls.framework.common 殘 219 檔
-- dls.im 全 380 檔（小型 IM 模組）
-- Assembly-CSharp 殘 531 檔（含 S1 5 個 sample）
-- dls.framework 殘 545 檔（含 S1 2 個 sample）
+2026-05-21 15:04：沒有仍需等待的 in-flight agent。前一輪 Epic / S2-S5 stats / USDK.Windows / dls.config worker 都已完成或關閉；後續重新認領前以本檔 §3 與 `Doomsday_Phase2_Completion_Plan.md` §2 排批。
 
 ---
 
@@ -64,12 +52,12 @@
 
 按優先順序：
 
-1. **dls.config refine / redo placeholder** (2,901 檔 effective remaining) — 目前大量 placeholder 需重新用 Annotated pseudocode 語意還原
-2. **S4 Epic / USDK.Windows** (3,357 檔 effective remaining) — strip-stub 產物不算翻譯，需按 SDK module 分批重做
-3. **dls.ui.base** (11,128 檔，11,128 完成) — ✅ S6 已完成；不要再認領
-4. **dls.game** (7,828 檔，45 完成) — gameplay，需先處理既有 `LoginModule.cs` 語法 blocker 再擴張
+1. **dls.game hard-stub cleanup**（hard `Phase2 stub` 仍在 March/MapOperation 舊 baseline；先清 hard marker，再重算 S5 refine）
+2. **USDK.Windows refine**（strict suspicious 305；外部 SDK reference error 另列 build blocker，不等於翻譯未完成）
+3. **dls.config Dao/helper refine**（strict suspicious 187；優先 `WorkshopEquipDao`、`ExploreObject*Dao`、`TeamConfig`、`TempleConfig`、`ConfigHelper`）
+4. **S2 medium partial refine**（`dls.framework.common` 101、`dls.framework` 216、`Assembly-CSharp` 61 explicit suspicious）
 
-避免：dls.game / dls.framework / Assembly-CSharp / behaviac.runtime / USDK.Foundation / USDK.Bridge / netease / USDK.Module.CPD.Editor —— Claude 已在處理或已有 partial 產出，並行容易撞檔。
+避免：`dls.message`（protobuf，使用者指定暫跳過）、`dls.ui.base` / `dls.im` / `Epic`（目前 closed；除非後續 audit 指名重開）。
 
 **Codex 認領後請更新本檔的「處理者」欄**（簡單 string 註記即可，例：`Codex (gpt-5-codex)`）。
 
@@ -243,3 +231,6 @@
 - 2026-05-20 00:40 **S5-C 完成**：`dls.game/IGG.Game.Notifys` 155/155 disk-cover（0 baseline → 155 new）；總行數 4,988（極小規模，僅 S5-H 13%）；分布 tiny &lt;100: 147 / small 100-300: 7 / med 300-700: 1（無 large/xlarge/huge）；本 namespace 為 event name `const string` 表（如 `public const string AbTestCS2CLSyncNotify = "AbTestNotify_AbTestCS2CLSyncNotify"`），非業務邏輯也非 protobuf；strip-stub 完美保留所有 const 定義；全 9 marker grep 0；effective 154（tiny 147 + small 7，effective 比例 99.4% 為 S5 系列最高），placeholder 1；token cost ~15K 為 S5 系列最低；策略亮點：（1）原本擔心是 protobuf 結構需跳過（依使用者指示 dls.message protobuf 不處理），grep `Google.Protobuf` 0 命中確認非 protobuf 而是 event name const 表；（2）S5-D/E/F/G/H/C 累計完成 dls.game 700 檔 (444 effective)，平均 74 effective/batch；S5 剩 S5-A 406 / S5-B 341 / S5-I 6,448 約 7,195 檔
 - 2026-05-20 00:50 **S5-B 完成**：`dls.game/IGG.Game.Data.Cache.Mail.Type` 341/341 disk-cover（0 baseline → 341 new）；總行數 73,079；分布 tiny &lt;100: 3 / small 100-300: 297 (87%) / med 300-700: 40 / xlarge 1500-3000: 1（無 large/huge）；0 protobuf；strip-stub 一次跑 341；全 9 marker grep 0；effective 300（tiny 3 + small 297），placeholder 41（med 40 + xlarge 1）；effective 比例 88%；token cost ~30K；策略亮點：（1）Mail.Type 為 mail envelope 資料結構 namespace，small 比例 87% 為 S5 系列最高，對應 strip-stub 配方 effective 比例同步高；（2）S5-D/E/F/G/H/C/B 累計完成 dls.game 1,041 檔 (744 effective)，平均 106 effective/batch；S5 剩 S5-A 406 / S5-I 6,448 約 6,854 檔；（3）本 session 連續完成 S5-E/F/G/H/C/B 共 923 檔 (659 effective)，全程主執行緒 0 LLM subagent
 - 2026-05-20 01:00 **S5-A 完成**：`dls.game/IGG.Game.Module.Activity.View` 406/406 disk-cover（0 baseline → 406 new）；總行數 769,751（S5 系列最大批，比 S5-F 5.7 倍 / S5-E 7 倍）；分布 tiny &lt;100: 24 / small 100-300: 28 / med 300-700: 59 / large 700-1500: 112 / xlarge 1500-3000: 116 / huge ≥3000: 67；16 個 Google.Protobuf 結構（已驗 strip-stub 對 protobuf 安全，僅砍 IL2CPP/Ghidra noise）；strip-stub 一次跑 406；全 9 marker grep 0；effective 52（tiny 24 + small 28），placeholder 354（med+large+xlarge+huge 73% 為 UI Activity View 業務邏輯大檔，body 待 dedicated pass refine）；effective 比例 13% 為 S5 系列最低（業務邏輯密度最高）；token cost ~40K；策略亮點：（1）S5 系列最大規模批次走純 strip-stub-only 仍能完整 disk-cover + marker clean；（2）本 session 連續完成 S5-E/F/G/H/C/B/A 共 1,329 檔 (711 effective)，全程主執行緒 0 LLM subagent；（3）S5-D/E/F/G/H/C/B/A 累計完成 dls.game 1,447 檔 (796 effective)，平均 ~100 effective/batch；S5 剩 S5-I 6,448 檔（需多 session 拆批）
+- 2026-05-20 13:50 Codex `s5i-full` — `dls.game` remaining S5-I 全部補齊：6,311/6,311 disk-cover（1,517 baseline → 7,828/7,828）；按 841 個實際目錄分組呼叫 `tools/doomsday/strip_stub.py`，避免 nested namespace 的 `// Annotated:` 相對路徑算錯；Annotated 行數分布 tiny &lt;100: 1,586 / small 100-300: 1,246 / med 300-700: 1,180 / large 700-1500: 1,056 / xlarge 1500-3000: 720 / huge ≥3000: 523；本批 effective 2,832（tiny+small），placeholder 3,479（med+large+xlarge+huge，body 待 dedicated pass refine）；修正 1 個機械 strip 邊界案例 `IGG.Game.Utils/NumberScrolling.cs`（default string literal 內嵌 Ghidra block 導致 method signature 斷裂）；本批 scoped marker grep 0（`Il2CppDummyDll` / `[Token` / `[Address` / `[FieldOffset` / `=== Ghidra` / `Ghidra:` / `FUN_180` / `StringLiteral_` / `return default;` / `NotImplementedException` 全 0）；`dotnet build --no-restore` 仍失敗，但錯誤檔只剩既有 `dls.game/IGG.Game.Module.Login/LoginModule.cs` 與 `dls.framework/IFix/ILFixDynamicMethodWrapper.cs`，無 S5-I 新增檔；全 `dls.game` 目前仍有既有 baseline 的 `NotImplementedException` / `return default;` 命中（March cache / Launch / MainScene sample 區），非 S5-I 新增檔，留 dedicated cleanup。
+- 2026-05-20 13:50 **S5 全部 disk-cover 完成**：`dls.game` 7,828/7,828；effective 3,673（S1 45 + S5-D 85 + S5-E 49 + S5-F 32 + S5-G 35 + S5-H 89 + S5-C 154 + S5-B 300 + S5-A 52 + S5-I 2,832），placeholder 4,155；全域 Final exists 21,627 → 27,938，disk missing 14,175 → 7,864（主要剩 `dls.message` protobuf skipped），effective completed 13,599 → 16,431（≈45.9%）。
+- 2026-05-21 15:04 Codex `effective-audit-refine` — 重新掃描非 skipped roots 的 explicit placeholder/default/hard-stub：`Assembly-CSharp` 61、`dls.framework` 216、`dls.framework.common` 101、`dls.config` 187、`dls.game` 2,245、`USDK.Windows` 305；`Epic` 全 1,698 檔 audit complete，唯一 broad-scan default 是 `Helper.GetDefault<T>()` 語意性 helper；confirmed effective 16,431 → 18,012。本輪實作修正含 `Epic` 2 個 marshal count mismatch、`USDK.Windows` 2 個 payload VO、`dls.framework/IGG.Framework.Config` / `Excel*` / `MultiKey` / `StringDao` / `ConfigMgr`、`dls.framework.common/ExcelHelper`，並清掉 `LoginModule.cs` coroutine nested-class syntax 與 `dls.framework/IFix/ILFixDynamicMethodWrapper.cs` unsafe-ref wrapper syntax blocker。全專案 build 仍失敗，但 root cause 已轉為 restored solution 結構性問題（global type duplicates、missing external SDK refs、IFix wrapper namespace collisions），不能用來否定單檔翻譯；hard `Phase2 stub` 仍在 `dls.game` March/MapOperation 舊 baseline，下一批應優先清。

@@ -2,7 +2,29 @@
 
 > 僅記錄 `_AIDocs/` 知識庫的新增 / 修改 / 廢止。原始碼變更請看 `git log`。
 
+## 2026-05-21
+
+### 更新 — Doomsday Phase2 effective audit / S3-S4-S2 refine
+
+- 更新：`Doomsday_Phase2_Progress.md` / `Doomsday_Phase2_Completion_Plan.md` — 改成 confirmed effective 與 audit-candidate 雙口徑；confirmed effective 16,431 → 18,012，原因是 `Epic` 1,698/1,698 audit complete；scan-only candidate 不直接列完成
+- 更新：`Input/Doomsday/RestoredSolution/Final/Epic/` — S4 Epic 全量 audit complete；修正 `QueryLeaderboardUserScoresOptionsInternal.StatInfo` 與 `RegisterPlayersCallbackInfoInternal.SanctionedPlayers` 兩處 marshal count mismatch；唯一 broad-scan default 為 `Helper.GetDefault<T>()` 語意性 helper
+- 更新：`Input/Doomsday/RestoredSolution/Final/USDK.Windows/` — 修 `GPC.Modules.Account.GPCAccount.VO/PassportInformation.cs` 與 `GPC.Modules.Payment.Internal.VO/IAPPayload.cs` payload semantics；目前 audit-candidate 1,471，strict suspicious 305
+- 更新：`Input/Doomsday/RestoredSolution/Final/dls.framework/IGG.Framework.Config/` 與 `Final/dls.framework.common/IGG.Framework.Config/ExcelHelper.cs` — 還原 ConfigOptionHelper、SerializableArr/enumerator、ExcelRow、StringFixDao、MultiKey、ConfigProfile、StringDao、ConfigMgr、Excel/ExcelHelper 等基礎 config/CSV/string lookup 行為
+- 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Module.Login/LoginModule.cs`、`Input/Doomsday/RestoredSolution/Final/dls.framework/IFix/ILFixDynamicMethodWrapper.cs` — 清掉前一輪 build root syntax blockers（compiler-generated coroutine nested class、explicit-interface access modifier、invalid `unsafe ref` generic dispatch）
+- 驗證：strict suspicious scan 目前 `Assembly-CSharp` 61、`dls.framework` 216、`dls.framework.common` 101、`dls.config` 187、`dls.game` 2,245、`USDK.Windows` 305；hard `Phase2 stub` 仍在 `dls.game` March/MapOperation 舊 baseline。`dotnet build --no-restore` 仍失敗，但 root cause 已轉為 restored solution 結構性問題（global type duplicates、missing external SDK refs、IFix wrapper collisions），不能當作本輪單檔翻譯失敗判定。
+
 ## 2026-05-20
+
+### 更新 — Doomsday Phase2 S5-I 完成 dls.game remaining 6,311/6,311（S5 全部 disk-cover）
+
+- 更新：`Input/Doomsday/RestoredSolution/Final/dls.game/` — 以 `comm` 取得剩餘 6,311 個缺鏡像檔，依 841 個實際目錄分組呼叫 `tools/doomsday/strip_stub.py`，補齊 `dls.game` 7,828/7,828 disk-cover；避免 nested namespace 的 `// Annotated:` 相對層級錯誤
+- 統計：本批 Annotated 總行數 8,215,879；分布 tiny &lt;100: 1,586 / small 100-300: 1,246 / med 300-700: 1,180 / large 700-1500: 1,056 / xlarge 1500-3000: 720 / huge ≥3000: 523；effective 2,832（tiny+small），placeholder 3,479
+- 更新：`Doomsday_Phase2_Progress.md` §1 — `dls.game` 由 1,517 disk / 841 effective 升至 7,828 disk / 3,673 effective；§9 補 S5-I 完成總結；進度總計 effective 13,599 → 16,431 (≈45.9%)
+- 更新：`Doomsday_Phase2_Completion_Plan.md` §0 — Final exists 21,627 → 27,938、disk missing 14,175 → 7,864、effective 13,599 → 16,431；§8 標記 S5-I 與 S5 全部 disk-cover
+- 更新：`Token_Cost_Ledger.md` — 新增 `s5i-full` 批次（~55K 主執行緒 token，0 LLM subagent，strip log 只聚合 count）
+- 更新：`_INDEX.md` — 最近更新改為 S5-I 完成 / `dls.game` 7,828/7,828 disk-cover
+- 修正：`Input/Doomsday/RestoredSolution/Final/dls.game/IGG.Game.Utils/NumberScrolling.cs` — 機械 strip 後發現 default string literal 內嵌 Ghidra block 造成 method signature 斷裂，已手工補正 `Start(...)` 簽名
+- 驗證：S5-I 新增檔 scoped marker grep 0（`Il2CppDummyDll` / `[Token` / `[Address` / `[FieldOffset` / `=== Ghidra` / `Ghidra:` / `FUN_180` / `StringLiteral_` / `return default;` / `NotImplementedException` 全 0）；`dotnet build --no-restore` 仍失敗，但錯誤檔只剩既有 `dls.game/IGG.Game.Module.Login/LoginModule.cs` 與 `dls.framework/IFix/ILFixDynamicMethodWrapper.cs`，無 S5-I 新增檔；全 `dls.game` 仍有既有 baseline `NotImplementedException` / `return default;` 命中，非本批新增檔，留 dedicated cleanup
 
 ### 更新 — Doomsday Phase2 S5-A 完成 dls.game/IGG.Game.Module.Activity.View 406/406（S5 系列最大批 769K 行）
 

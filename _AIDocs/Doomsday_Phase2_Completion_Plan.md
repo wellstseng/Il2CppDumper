@@ -2,7 +2,7 @@
 
 > 目的：把剩餘 `Annotated -> Final` 翻譯工作拆成可分派給多個 model / agent 的 section。
 > 入口：執行前先讀 `Doomsday_Phase2_Progress.md` §4 與 `Translation_SOP_TokenSafe.md`。
-> 最近更新：2026-05-20 01:00
+> 最近更新：2026-05-21 15:04
 
 ---
 
@@ -13,10 +13,12 @@
 | 口徑 | 數量 | 說明 |
 |---|---:|---|
 | Annotated total | 35,802 | `Input/Doomsday/RestoredSolution/Annotated/**/*.cs` |
-| Final exists | 21,627 | 有鏡像 Final 檔；其中部分為 placeholder，不代表品質合格 |
-| Disk missing | 14,175 | Annotated 有、Final 沒有 |
-| Effective completed | 13,599 | 進度表品質口徑；不含 template/stub/strip placeholder |
-| Effective remaining | 22,203 | 需要翻譯或重檢後才能算完成 |
+| Final exists | 27,938 | 有鏡像 Final 檔；其中部分為 placeholder，不代表品質合格 |
+| Disk missing | 7,864 | Annotated 有、Final 沒有（主要為 `dls.message` protobuf skipped） |
+| Confirmed effective completed | 18,012 | 進度表品質口徑；舊 16,431 + `Epic` audit promotion 1,581，不含 scan-only candidate |
+| Confirmed effective remaining | 17,790 | 需要翻譯或重檢後才能算完成；`dls.message` protobuf 仍依使用者指示跳過 |
+| Audit-candidate ceiling | 24,797 | broad suspicious scan 後的候選上限；只能用來排批，不等於完成 |
+| Explicit suspicious remaining | 3,115 | 非 skipped roots 中仍有明顯 placeholder/default/hard-stub pattern；不含 `Epic.Helper.GetDefault<T>()` 語意性 default |
 
 `dls.im` 特例已收斂：目前磁碟 380/380、全 dll marker grep 0，且 2026-05-19 13:55 build 摘要沒有 `dls.im` 語法錯。後續若要更高標準，可再做語意抽查，但不再列為 S1 阻塞。
 
@@ -57,10 +59,10 @@ Notes: <only concrete blockers>
 |---|---|---:|---|---:|
 | S0 | True missing tail | 0 | ✅ done：`USDK.Module.BlacklistedWord.Editor/n.cs` dedicated pass completed | 0 |
 | S1 | `dls.im` recheck | 0 | ✅ done：marker/syntax criteria passed | 0 |
-| S2 | Medium partial dlls | 1,477 | 最容易快速提高有效完成數 | 4-6 |
-| S3 | Generated/config-like | 10,813 | 大量 enum / DTO / protobuf 類型，可用小批次穩定推進 | 8-12 |
-| S4 | External SDK wrappers | 3,357 effective | `Epic` / `USDK.Windows` disk-covered placeholder exists, but only `Epic.OnlineServices.Sanctions/Logging/Reports/Metrics/IntegratedPlatform/ProgressionSnapshot/Stats/RTCAdmin` have been redone/audited | 4-8 |
-| S5 | `dls.game` gameplay | 7,649 | 業務邏輯多，需按 namespace 分派；S5-D/S5-E 已推進 140 effective | 8-12 |
+| S2 | Medium partial dlls | 378 explicit suspicious | `Assembly-CSharp` 61 + `dls.framework` 216 + `dls.framework.common` 101；candidate 仍需 audit | 3-5 |
+| S3 | Generated/config-like | 187 explicit suspicious + 7,867 skipped protobuf | `dls.config` 已收斂到 2,759 audit-candidate；`dls.message` protobuf 繼續 skip | 4-8 |
+| S4 | External SDK wrappers | 305 explicit suspicious | `Epic` 1,698/1,698 audit complete；`USDK.Windows` 仍需按 `GPC.Modules.*` refine | 2-4 |
+| S5 | `dls.game` gameplay refine | 2,245 explicit suspicious | ✅ disk-covered 7,828/7,828；hard `Phase2 stub` 仍在 March/MapOperation 舊 baseline，優先清 hard marker | 4-8 |
 | S6 | `dls.ui.base` UI | 0 | ✅ done：11,128/11,128 FairyGUI generated UI restored from pseudocode | 0 |
 
 ---
@@ -109,9 +111,9 @@ These sections are large enough to parallelize but small enough to finish before
 | Section | DLL | Missing | Suggested split |
 |---|---|---:|---|
 | S2-A | `USDK.Module.Operations.Editor` | 0 | ✅ disk-covered 207/207；含 stub 大檔，effective 207（S2A 主體 LLM 翻譯，少量 stub 大檔） |
-| S2-B | `dls.framework.common` | 0 | ✅ disk-covered 234/234；effective 234（S2B 主體 LLM 翻譯 + 25+ 個 ≥500 行 stub） |
-| S2-C | `dls.framework` | 541 effective | disk-covered 547/547；effective 僅 6（2 sample + IFix runtime 4 抄 dls.framework.common 範本）；其餘 541 為 strip-stub placeholder 需 dedicated refine |
-| S2-D | `Assembly-CSharp` | 527 effective | disk-covered 536/536；effective 9（5 sample + IFix runtime 4 抄 dls.framework.common 範本）；其餘 527 為 strip-stub placeholder 需 dedicated refine |
+| S2-B | `dls.framework.common` | 101 explicit suspicious | disk-covered 234/234；stricter audit reopened body refine bucket |
+| S2-C | `dls.framework` | 216 explicit suspicious | disk-covered 547/547；本輪修 `IGG.Framework.Config` / Excel / StringDao / MultiKey / ConfigMgr；剩餘 explicit suspicious 216 |
+| S2-D | `Assembly-CSharp` | 61 explicit suspicious | disk-covered 536/536；candidate 475，仍需 dedicated audit 才能升格 |
 
 Top split hints:
 - `dls.framework`: `FairyGUI` 209, `IGG.Framework.Config` 34, `IGG.Framework` 34, `IGG.Framework.Utils` 28.
@@ -126,7 +128,7 @@ These are big but structurally repetitive. Keep batches small enough for review.
 
 | Section | DLL | Missing | Suggested split |
 |---|---|---:|---|
-| S3-A | `dls.config` | 2,901 effective | disk-covered 2946/2946, but only first 45 count as translated; placeholders must be overwritten/refined |
+| S3-A | `dls.config` | 187 explicit suspicious | disk-covered 2946/2946；本輪多批 config/Dao/helper refine 後 audit-candidate 2,759；剩餘優先 `WorkshopEquipDao`、`ExploreObject*Dao`、`TeamConfig`、`TempleConfig`、`ConfigHelper` |
 | S3-B | `dls.message` | 7,867 | ⏭️ skip for now: protobuf per user instruction |
 
 Rules:
@@ -141,8 +143,8 @@ Rules:
 
 | Section | DLL | Missing | Top namespaces |
 |---|---|---:|---|
-| S4-A | `Epic` | 1,581 effective | `Epic.OnlineServices.Sanctions` 13/13 redone; `Logging` 7/7 + `Reports` 8/8 + `Metrics` 11/11 + `IntegratedPlatform` 11/11 + `ProgressionSnapshot` 19/19 + `Stats` 23/23 + `RTCAdmin` 25/25 audited/restored/effective; remaining strip-stub placeholders must redo by `Epic.OnlineServices.<module>` |
-| S4-B | `USDK.Windows` | 1,776 effective | strip-stub placeholder exists; must redo by `GPC.Modules.*` namespace family |
+| S4-A | `Epic` | 0 | ✅ 1,698/1,698 audit complete；本輪修 `QueryLeaderboardUserScoresOptionsInternal.StatInfo` 與 `RegisterPlayersCallbackInfoInternal.SanctionedPlayers` marshal count mismatch |
+| S4-B | `USDK.Windows` | 305 explicit suspicious | disk-covered 1,776/1,776；audit-candidate 1,471；本輪修 `PassportInformation` / `IAPPayload` payload semantics，剩餘按 `GPC.Modules.*` namespace family |
 
 Suggested batching:
 - `Epic.OnlineServices.<module>` is a natural unit.
@@ -152,7 +154,7 @@ Suggested batching:
 
 ## 8. Section S5 — dls.game Gameplay
 
-`dls.game` has 7,747 missing by disk and many existing partial files. Assign by namespace family, not by raw file count alone.
+`dls.game` is fully disk-covered (7,828/7,828). Stricter scan currently finds 2,245 explicit suspicious files; hard `Phase2 stub` hits are concentrated in March/MapOperation old baseline files and should be cleaned before broad S5 refine. Assign by namespace family and gameplay value, not by raw file count alone.
 
 High-priority candidate splits:
 
@@ -163,10 +165,10 @@ High-priority candidate splits:
 | S5-C | `IGG.Game.Notifys` | ✅ 155/155 disk-cover, 154 effective + 1 placeholder（event name `const string` 表，非 protobuf；S5 系列 effective 比例 99.4% 最高） |
 | S5-D | `IGG.Game.Helper` | ✅ 118/118 disk-cover, 91 effective (含 6 sample) + 27 placeholder |
 | S5-E | `IGG.Game.Module.MultiplierGate` | ✅ 116/116 disk-cover, 49 effective + 67 placeholder（全 IFix-only，主執行緒 strip-stub 一次過） |
-| S5-F | `IGG.Game.Module.March.Actor` | 107 |
+| S5-F | `IGG.Game.Module.March.Actor` | ✅ 107/107 disk-cover, 32 effective + 75 placeholder（全 IFix-only strip-stub，含 baseline NIE 修補） |
 | S5-G | `IGG.Game.Module.Common.View` | ✅ 104/104 disk-cover, 35 effective + 69 placeholder（全 IFix-only strip-stub，0 baseline） |
 | S5-H | `IGG.Game.Data.Cache.IM` | ✅ 100/100 disk-cover, 89 effective + 11 placeholder（全 IFix-only strip-stub，0 baseline；effective 比例 89% 為 S5 系列最高） |
-| S5-I | remaining `IGG.Game.Module.*` | split into 50-150 file chunks |
+| S5-I | remaining `dls.game` paths | ✅ 6,311/6,311 disk-cover, 2,832 effective + 3,479 placeholder（841 目錄分組 strip-stub；全 S5 disk-cover 完成） |
 
 Avoid:
 - Do not touch existing completed Launch/Login/MainScene/Cache sample areas unless the section explicitly says rework.
@@ -209,11 +211,11 @@ UI rules:
 
 ## 10. Recommended Parallel Launch Order
 
-1. Launch 4 agents on `S2` medium partial dlls.
-2. Launch generated/config wave (`S3`) only after the first agents confirm marker/syntax quality.
-3. Launch `S4` external SDK wrappers.
-4. Launch `S5` large business sections in waves; skip `S6` because `dls.ui.base` is already 11,128/11,128 complete.
-5. Treat `dls.im` as closed unless a later semantic audit explicitly reopens individual files.
+1. Clear hard `Phase2 stub` hits in `dls.game` March/MapOperation old baseline files.
+2. Run `USDK.Windows` refine by `GPC.Modules.*` family, targeting the 305 explicit suspicious files first.
+3. Run `dls.config` Dao/helper refine, targeting the 187 explicit suspicious files first.
+4. Run `S2` body refine for `dls.framework.common` / `dls.framework` / `Assembly-CSharp` suspicious buckets.
+5. Treat `Epic`, `dls.im`, and `dls.ui.base` as closed unless a later semantic audit explicitly reopens individual files.
 
 ---
 

@@ -1,7 +1,7 @@
 # Il2CppDumper — AI 分析文件索引
 
 > 本資料夾包含由 AI 輔助產出的專案分析文件。
-> 最近更新：2026-05-19（Doomsday S5-E 完成；常駐 strip_stub.py 工具腳本）
+> 最近更新：2026-05-21（Doomsday effective audit；Epic 1,698/1,698 complete；剩餘 explicit suspicious 以 S5/S4/S3/S2 refine 排批）
 
 ---
 
